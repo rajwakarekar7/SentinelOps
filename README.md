@@ -64,23 +64,23 @@ SentinelOps is designed using a modular infrastructure-oriented architecture whe
 
 Components      Responsibility
 
-brain.py	    Core monitoring, analytics, remediation, and observability engine
+brain.py	      Core monitoring, analytics, remediation, and observability engine
 
 commands.py	    Command routing and CLI interaction layer
 
-logger.py	    Operational logging system
+logger.py	      Operational logging system
 
-memory.py	    Persistent memory management
+memory.py	      Persistent memory management
 
 nlp.py	        Natural language command processing
 
-utils.py	    Shared utility functions
+utils.py	      Shared utility functions
 
-config.json 	Configuration-driven monitoring policies
+config.json 	  Configuration-driven monitoring policies
 
-alerts.json  	Persistent active incident storage
+alerts.json  	  Persistent active incident storage
 
-memory.json 	Persistent assistant memory storage
+memory.json 	  Persistent assistant memory storage
 
 
 ### Operational Flow
@@ -123,19 +123,19 @@ Persistent Operational Storage
 ## Available Commands
 
 
-/dashboard  	  Display centralized infrastructure dashboard
+/dashboard  	    Display centralized infrastructure dashboard
 
-/telemetry  	  Show telemetry history for CPU, memory, and disk
+/telemetry  	    Show telemetry history for CPU, memory, and disk
 
-/alerts     	  Display active operational incidents
+/alerts     	    Display active operational incidents
 
 /incidentstats	  Show active incident analytics
 
 /resolvedstats	  Show resolved incident analytics
 
-/average cpu	  Display average CPU utilization
+/average cpu	    Display average CPU utilization
 
-/peak cpu	      Display peak CPU usage
+/peak cpu	        Display peak CPU usage
 
 /stability cpu	  Analyze CPU stability trends
 
@@ -147,9 +147,9 @@ Persistent Operational Storage
 
 /savereport	      Export persistent operational report
 
-/kill process	  Terminate non-protected processes safely
+/kill process	    Terminate non-protected processes safely
 
-/exit	          Shut down SentinelOps monitoring system
+/exit	            Shut down SentinelOps monitoring system
 
 
 Example Usage:
