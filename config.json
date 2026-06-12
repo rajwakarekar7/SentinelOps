@@ -1,0 +1,13 @@
+{
+
+    "cpu_warning": 70,
+    "cpu_critical": 90,
+
+    "memory_warning": 70,
+    "memory_critical": 90,
+
+    "disk_warning": 80,
+    "disk_critical": 95,
+
+    "cooldown": 300
+}
