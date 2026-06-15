@@ -35,6 +35,7 @@ def help_command(parts , brain):
     print("/dashboard data")
     print("/report")
     print("/savereport")
+    print("/audit")
 
 
 #LEARN
@@ -376,7 +377,7 @@ def service_command(parts, brain):
 
     print("\n[SERVICE STATUS]\n")
     print("SERVICE:" , result["service"])
-
+    
     print("STATUS:" , result["status"])
 
     if result["status"] == "ACTIVE":
@@ -657,6 +658,12 @@ def save_report_command(parts ,brain):
     print("\n[REPORT EXPORT]\n")
 
     print("REPORT SAVED:", filename)
+
+def audit_command(parts ,brain):
+
+    print("\n[AUDIT TRAIL]\n")
+
+    print(brain.show_audit_trail())
 
     
     

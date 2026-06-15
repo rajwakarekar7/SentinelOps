@@ -1117,6 +1117,39 @@ class Brain:
 
         self.audit_trail.append(record)
 
+
+    def show_audit_trail(self):
+
+        if len(self.audit_trail) == 0 :
+
+            return "NO AUDIT EVENT RECORDED"
+        
+        lines = []
+
+        for event in self.audit_trail:
+
+            line = (
+
+                event["timestamp"] 
+
+                + " | " 
+
+                + event["event"]
+
+                + " | "
+
+                + event["target"]
+
+                + " | "
+
+                + event["status"]
+
+            )
+
+            lines.append(line)
+
+        return "\n".join(lines)
+
     
     def load_alerts(self):
 
@@ -1248,7 +1281,26 @@ class Brain:
 
         if result["status"] == "ACTIVE":
 
+            self.log_audit_event(
+
+                "AUTO_RECOVERY" ,
+
+                service_name ,
+
+                "SUCCESS"
+            )
+
             return "SERVICE RECOVERD SUCCESSFULLY"
+        
+
+        self.log_audit_event(
+
+            "AUTO_RECOVERY" ,
+
+            service_name ,
+
+            "FAILED"
+        )
         
         
         return "SERVICE RECOVEREY FAILED"

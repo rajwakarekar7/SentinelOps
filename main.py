@@ -37,7 +37,9 @@ commands = {
     "/recover": recover_command,
     "/dashboard": dashboard_command,
     "/report": report_command,
-    "/savereport": save_report_command
+    "/savereport": save_report_command,
+    "/audit": audit_command
+
 
 
 }
