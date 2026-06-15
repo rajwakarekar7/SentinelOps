@@ -385,7 +385,17 @@ class Brain:
 
                     "service" : service_name,
 
-                    "status" : service_status.upper()
+                    "status" : service_status.upper(),
+
+                    "PID" : "N/A",
+
+                    "cpu" : 0,
+
+                    "memory" : 0,
+
+                    "health" : "SERVICE NOT RUNNING",
+
+                    "uptime" : "N/A"
    
                 }
 
