@@ -387,7 +387,7 @@ class Brain:
 
                     "status" : service_status.upper(),
 
-                    "PID" : "N/A",
+                    "pid" : "N/A",
 
                     "cpu" : 0,
 

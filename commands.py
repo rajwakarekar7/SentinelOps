@@ -376,17 +376,24 @@ def service_command(parts, brain):
 
     print("\n[SERVICE STATUS]\n")
     print("SERVICE:" , result["service"])
+    
     print("STATUS:" , result["status"])
 
     if result["status"] == "RUNNING":
 
         print("PID:" , result["pid"])
 
+        print("CPU USAGE:", result["cpu"],"%")
 
-    print("CPU USAGE:", result["cpu"],"%")
-    print("MEMORY USAGE:", result["memory"], "%")
-    print("UPTIME:" , result["uptime"])
-    print("HEALTH:" , result["health"])
+        print("MEMORY USAGE:", result["memory"], "%")
+
+        print("UPTIME:" , result["uptime"])
+
+        print("HEALTH:" , result["health"])
+
+    else:
+
+        print("HEALTH:" , result["health"])
 
 
 #SERVICES DASHBOARD
