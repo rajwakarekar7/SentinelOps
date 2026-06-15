@@ -379,7 +379,15 @@ class Brain:
 
             service_status = result.stdout.stip()
 
-            print(service_status)
+            if service_status != "active":
+
+                return{
+
+                    "service" : service_name,
+
+                    "status" : service_status.upper()
+   
+                }
 
         except:
 
