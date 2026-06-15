@@ -40,9 +40,11 @@ class Brain:
 
             "nginx" ,
 
-            "apache" ,
+            "httpd" ,
 
-            "mysql"
+            "mysql" ,
+
+            "sshd"
 
         }
 
@@ -52,7 +54,7 @@ class Brain:
 
             "mysql" ,
 
-            "apache"
+            "httpd"
         ]
 
         self.health_histroy = []
@@ -1212,16 +1214,18 @@ class Brain:
 
             return "SERVICE NOT APPROVED FOR AUTO-RECOVERY"
         
-        os.system(
+        subprocess.run(
 
-            "net start"
+            ["sudo" ,"systemctl" ,"restart" , service_name],
 
-            + service_name
+            capture_output=True,
+
+            text=True
         )
 
         result =self.check_service(service_name)
 
-        if result["status"] == "RUNNING":
+        if result["status"] == "ACTIVE":
 
             return "SERVICE RECOVERRD SUCCESSFULLY"
         
