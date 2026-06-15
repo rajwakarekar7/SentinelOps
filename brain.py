@@ -377,7 +377,7 @@ class Brain:
                 text=True
             )
 
-            service_status = result.stdout.stip()
+            service_status = result.stdout.strip()
 
             if service_status != "active":
 
