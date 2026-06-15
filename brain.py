@@ -465,7 +465,7 @@ class Brain:
 
         return{
            "service": service_name,
-            "status": "NOT RUNNING"
+            "status": "INACTIVE"
         }
     
 

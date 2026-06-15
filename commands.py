@@ -376,10 +376,10 @@ def service_command(parts, brain):
 
     print("\n[SERVICE STATUS]\n")
     print("SERVICE:" , result["service"])
-    
+
     print("STATUS:" , result["status"])
 
-    if result["status"] == "RUNNING":
+    if result["status"] == "ACTIVE":
 
         print("PID:" , result["pid"])
 
