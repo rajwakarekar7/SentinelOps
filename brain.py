@@ -6,6 +6,7 @@ import psutil
 import time
 import json
 import os
+import subprocess
 
 class Brain:
 
@@ -593,7 +594,7 @@ class Brain:
 
                     }   
 
-                    self.active_alert.append(alert)
+                    self.active_alerts.append(alert)
 
                     self.save_alerts()
 
@@ -1482,6 +1483,24 @@ class Brain:
         file.close()
 
         return filename
+    
+
+    def test_linux_service(self):
+
+        result = subprocess.run( 
+            
+            ["systemctl", "is-active", "shhd"],
+
+            capture_output=True,
+
+            text=True
+                                
+
+         )
+        
+        print(result.st)
+
+
 
 
 

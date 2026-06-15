@@ -34,7 +34,7 @@ def help_command(parts , brain):
     print("/recover service")
     print("/dashboard data")
     print("/report")
-    print("savereport")
+    print("/savereport")
 
 
 #LEARN
