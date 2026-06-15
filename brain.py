@@ -1225,7 +1225,7 @@ class Brain:
 
         result =self.check_service(service_name)
 
-        if result["status"] == "ACTIVE":
+        if result["status"] == "active":
 
             return "SERVICE RECOVERRD SUCCESSFULLY"
         
