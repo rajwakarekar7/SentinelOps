@@ -61,9 +61,9 @@ class Brain:
 
         self.health_history = []
 
-       
-         
+        self.failed_services = set()
 
+    
 
     def learn(self, word ,meaning , category):
 
@@ -1126,23 +1126,24 @@ class Brain:
         
         lines = []
 
+        lines.append(
+
+            f"{'TIMESTAMP':20}"
+            f"{'EVENT':20}"
+            f"{'TARGET':15}"
+            f"{'STATUS':15}"
+        )
+
+        lines.append("-" * 70)
+
         for event in self.audit_trail:
 
             line = (
 
-                event["timestamp"] 
-
-                + " | " 
-
-                + event["event"]
-
-                + " | "
-
-                + event["target"]
-
-                + " | "
-
-                + event["status"]
+                f"{event['timestamp']:20}"
+                f"{event['event']:20}"
+                f"{event['target']:15}"
+                f"{event['status']:15}"
 
             )
 
@@ -1281,6 +1282,8 @@ class Brain:
 
         if result["status"] == "ACTIVE":
 
+            self.failed_services.discard(service_name)
+
             self.log_audit_event(
 
                 "AUTO_RECOVERY" ,
@@ -1313,6 +1316,10 @@ class Brain:
             result = self.check_service(service)
 
             if result["status"] == "INACTIVE":
+
+                if service not in self.failed_services:
+
+                    self.failed_services.add(service)
 
                 log(
 
