@@ -1240,7 +1240,7 @@ class Brain:
 
             result = self.check_service(service)
 
-            if result["status"] == "NOT RUNNING":
+            if result["status"] == "INACTIVE":
 
                 log(
 
