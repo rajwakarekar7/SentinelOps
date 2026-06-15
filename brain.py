@@ -36,6 +36,8 @@ class Brain:
 
         self.resolved_alerts = []
 
+        self.audit_trail = []
+
         self.recoverable_services ={
 
             "nginx" ,
@@ -57,7 +59,9 @@ class Brain:
             "httpd"
         ]
 
-        self.health_histroy = []
+        self.health_history = []
+
+       
          
 
 
@@ -564,11 +568,11 @@ class Brain:
 
             health_score = self.calculate_health_score()
 
-            self.health_histroy.append(health_score)
+            self.health_history.append(health_score)
 
-            if len(self.health_histroy) > 100:
+            if len(self.health_history) > 100:
 
-                self.health_histroy.pop(0)
+                self.health_history.pop(0)
 
             current_time =time.time()
 
@@ -688,7 +692,7 @@ class Brain:
                         )
                     }
 
-                    self.active_alert.append(alert)
+                    self.active_alerts.append(alert)
 
                     self.save_alerts()
 
@@ -743,7 +747,7 @@ class Brain:
                         )
                     }
 
-                    self.active_alert.append(alert)
+                    self.active_alerts.append(alert)
 
                     self.save_alerts()
 
@@ -796,7 +800,7 @@ class Brain:
                         )
                     }
 
-                    self.active_alert.append(alert)
+                    self.active_alerts.append(alert)
 
                     self.save_alerts()
 
@@ -851,7 +855,7 @@ class Brain:
                         )
                     }
 
-                    self.active_alert.append(alert)
+                    self.active_alerts.append(alert)
 
                     self.save_alerts()
 
@@ -903,7 +907,7 @@ class Brain:
                         )
                     }
 
-                    self.active_alert.append(alert)
+                    self.active_alerts.append(alert)
 
                     self.save_alerts()
 
@@ -1097,6 +1101,22 @@ class Brain:
 
         file.close()
 
+
+    def log_audit_event(self, event ,target ,status):
+
+        record = {
+
+            "timestamp" : time.strftime("%Y-%m-%d %H:%M:%S"),
+
+            "event" : event,
+
+            "target" : target,
+
+            "status" : status
+        }
+
+        self.audit_trail.append(record)
+
     
     def load_alerts(self):
 
@@ -1251,6 +1271,15 @@ class Brain:
                     + "is not running"
                 )
 
+                self.log_audit_event(
+
+                    "SERVICE_FAILURE" ,
+
+                    service ,
+
+                    "INACTIVE"
+                )
+
                 recovery_result = self.restart_service(service)
 
                 log(
@@ -1360,7 +1389,7 @@ class Brain:
 
             result = self.check_service(service)
 
-            if result["status"] == "NOT RUNNING":
+            if result["status"] == "INACTIVE":
 
                 score -= 15
 
@@ -1373,13 +1402,13 @@ class Brain:
     
     def get_health_trend(self):
 
-        if len(self.health_histroy) < 2:
+        if len(self.health_history) < 2:
 
             return "STABLE"
         
-        first = self.health_histroy[0]
+        first = self.health_history[0]
 
-        last = self.health_histroy[-1]
+        last = self.health_history[-1]
 
         if last > first:
 
@@ -1394,13 +1423,13 @@ class Brain:
     
     def predictive_analysis(self):
 
-        if len(self.health_histroy) < 5:
+        if len(self.health_history) < 5:
 
             return "STABLE"
         
-        first = self.health_histroy[0]
+        first = self.health_history[0]
 
-        last = self.health_histroy[-1]
+        last = self.health_history[-1]
 
         difference = first - last
 
