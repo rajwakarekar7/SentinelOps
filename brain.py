@@ -1128,7 +1128,7 @@ class Brain:
 
         lines.append(
 
-            f"{'TIMESTAMP':20}"
+            f"{'TIMESTAMP':25}"
             f"{'EVENT':20}"
             f"{'TARGET':15}"
             f"{'STATUS':15}"
@@ -1140,7 +1140,7 @@ class Brain:
 
             line = (
 
-                f"{event['timestamp']:20}"
+                f"{event['timestamp']:25}"
                 f"{event['event']:20}"
                 f"{event['target']:15}"
                 f"{event['status']:15}"
@@ -1321,36 +1321,36 @@ class Brain:
 
                     self.failed_services.add(service)
 
-                log(
+                    log(
 
-                    "SERVICE FAILURE"
+                        "SERVICE FAILURE"
 
-                    + service
+                        + service
 
-                    + "is not running"
-                )
+                        + "is not running"
+                    )
 
-                self.log_audit_event(
+                    self.log_audit_event(
 
-                    "SERVICE_FAILURE" ,
+                        "SERVICE_FAILURE" ,
 
-                    service ,
+                        service ,
 
-                    "INACTIVE"
-                )
+                        "INACTIVE"
+                    )
 
-                recovery_result = self.restart_service(service)
+                    recovery_result = self.restart_service(service)
 
-                log(
+                    log(
 
-                    "[AUTO RECOVERY]"
+                        "[AUTO RECOVERY]"
 
-                    + service
+                        + service
 
-                    + "->"
+                        + "->"
 
-                    + recovery_result
-                )
+                        + recovery_result
+                    )
 
 
     def get_dashboard_data(self):
