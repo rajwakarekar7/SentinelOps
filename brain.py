@@ -1498,7 +1498,7 @@ class Brain:
 
          )
         
-        print(result.st)
+        print(result.stdout)
 
 
 
