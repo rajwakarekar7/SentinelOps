@@ -1224,10 +1224,12 @@ class Brain:
         )
 
         result =self.check_service(service_name)
+        print(result)
 
         if result["status"] == "ACTIVE":
 
-            return "SERVICE RECOVERRD SUCCESSFULLY"
+            return "SERVICE RECOVERD SUCCESSFULLY"
+        
         
         return "SERVICE RECOVEREY FAILED"
     
