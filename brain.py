@@ -452,7 +452,7 @@ class Brain:
                     return{
 
                         "service": service_name,
-                        "status": "RUNNING",
+                        "status": "ACTIVE",
                         "pid": process.pid,
                         "cpu": cpu,
                         "memory": memory,
@@ -1225,7 +1225,7 @@ class Brain:
 
         result =self.check_service(service_name)
 
-        if result["status"] == "active":
+        if result["status"] == "ACTIVE":
 
             return "SERVICE RECOVERRD SUCCESSFULLY"
         
