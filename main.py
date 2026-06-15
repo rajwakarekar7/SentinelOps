@@ -8,8 +8,6 @@ from nlp import process_natural_language
 
 brain = Brain()
 
-brain.test_linux_service()
-
 commands = {
 
     "/help": help_command,

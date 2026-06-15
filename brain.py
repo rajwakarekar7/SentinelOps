@@ -366,6 +366,26 @@ class Brain:
 
         service_name = service_name.lower()
 
+        try:
+
+            result = subprocess.run(
+
+                ["systemctl" ,"is-active" , service_name],
+
+                capture_output=True,
+
+                text=True
+            )
+
+            service_status = result.stdout.stip()
+
+            print(service_status)
+
+        except:
+
+            service_status = "unknow"
+            
+
         for process in psutil.process_iter():
 
             try:
@@ -433,7 +453,7 @@ class Brain:
 
         services = [
 
-            "ssh" ,
+            "sshd" ,
 
             "docker" ,
 
@@ -441,7 +461,7 @@ class Brain:
 
             "mysql" ,
 
-            "apache"
+            "httpd"
 
         ]
 
@@ -1485,20 +1505,6 @@ class Brain:
         return filename
     
 
-    def test_linux_service(self):
-
-        result = subprocess.run( 
-            
-            ["systemctl", "is-active", "shhd"],
-
-            capture_output=True,
-
-            text=True
-                                
-
-         )
-        
-        print(result.stdout)
 
 
 
