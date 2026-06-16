@@ -1668,6 +1668,7 @@ class Brain:
 
                 failure_counts[service] +=1
 
+
         if len(failure_counts) == 0:
 
             return "NO SERVICE FAILURE RECORDED"
@@ -1677,6 +1678,7 @@ class Brain:
         for service ,count in failure_counts.items():
 
             report += f"{service:15} : {count} failures\n"
+            
 
         most_unstable = max(
 
