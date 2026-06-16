@@ -1652,6 +1652,46 @@ class Brain:
             self.audit_trail = []
 
 
+    def service_reliability_report(self):
+
+        failure_counts = {}
+
+        for event in self.audit_trail:
+
+            if event["event"] == "SERVICE_FAILURE":
+
+                service = event["target"]
+
+                if service not in failure_counts:
+
+                    failure_counts[service] = 0
+
+                failure_counts[service] +=1
+
+        if len(failure_counts) == 0:
+
+            return "NO SERVICE FAILURE RECORDED"
+        
+        report = "\n[SERVICE RELIABILITY]\n\n"
+
+        for service ,count in failure_counts.items():
+
+            report += f"{service:15} : {count} failures\n"
+
+        most_unstable = max(
+
+            failure_counts,
+
+            key=failure_counts.get
+        )
+
+        report += "\nMOST UNSTABLE SERVICE\n"
+
+        report += most_unstable
+
+        return report
+
+
 
 
     

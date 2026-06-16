@@ -665,6 +665,10 @@ def audit_command(parts ,brain):
 
     print(brain.show_audit_trail())
 
+
+def reliability_command(parts , brain):
+
+    print(brain.service_reliability_report())
     
     
 
