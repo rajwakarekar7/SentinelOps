@@ -32,11 +32,15 @@ class Brain:
 
         self.active_alerts = self.load_alerts()
 
+        self.audit_file = "audit_trail.json"
+
         self.config = self.load_config()
 
         self.resolved_alerts = []
 
         self.audit_trail = []
+
+        self.load_audit_trail()
 
         self.recoverable_services ={
 
@@ -62,6 +66,8 @@ class Brain:
         self.health_history = []
 
         self.failed_services = set()
+
+       
 
     
 
@@ -1117,6 +1123,8 @@ class Brain:
 
         self.audit_trail.append(record)
 
+        self.save_audit_trail()
+
 
     def show_audit_trail(self):
 
@@ -1615,6 +1623,37 @@ class Brain:
         file.close()
 
         return filename
+    
+
+    def save_audit_trail(self):
+
+        with open(self.audit_file , "w") as file:
+
+            json.dump(
+
+                self.audit_trail,
+
+                file,
+
+                indent=4
+            )
+
+
+    def load_audit_trail(self):
+
+        try:
+
+            with open(self.audit_file, "r") as file:
+
+                self.audit_trail = json.load(file)
+
+        except:
+
+            self.audit_trail = []
+
+
+
+
     
 
 
