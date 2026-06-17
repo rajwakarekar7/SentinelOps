@@ -1691,6 +1691,10 @@ class Brain:
 
         report += most_unstable
 
+        report += "\n\n"
+
+        report += self.recovery_success_rate()
+
         return report
 
 
