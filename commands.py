@@ -670,6 +670,10 @@ def audit_command(parts ,brain):
 def reliability_command(parts , brain):
 
     print(brain.service_reliability_report())
+
+def recoveryrate_command(parts, brain):
+
+    print(brain.recovery_success_rate())
     
     
 

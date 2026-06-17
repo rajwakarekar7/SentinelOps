@@ -1678,7 +1678,7 @@ class Brain:
         for service ,count in failure_counts.items():
 
             report += f"{service:15} : {count} failures\n"
-            
+
 
         most_unstable = max(
 
@@ -1692,6 +1692,43 @@ class Brain:
         report += most_unstable
 
         return report
+
+
+    def recovery_success_rate(self):
+
+        total_recoveries = 0
+
+        successful_recoveries = 0
+
+        for event in self.audit_trail:
+
+            if event["event"] == "AUTO_RECOVERY":
+
+                total_recoveries += 1
+
+                if event["status"] == "SUCCESS":
+
+                    successful_recoveries += 1
+
+        if total_recoveries == 0:
+
+            return "NO RECOVERY DATA AVAILABLE"
+        
+        success_rate = round(
+
+            (successful_recoveries / total_recoveries) * 100,
+
+            2
+        )
+
+        return (
+
+            f"Recovery Success Rate: "
+
+            f"{success_rate}% "
+
+            f"({successful_recoveries}/{total_recoveries})"
+        )
 
 
 
