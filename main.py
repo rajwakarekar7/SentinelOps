@@ -40,7 +40,7 @@ commands = {
     "/savereport": save_report_command,
     "/audit": audit_command,
     "/reliability": reliability_command,
-    "/recoveryrate": recover_command
+    "/recoveryrate": recoveryrate_command
 }
 
 print("Smart Brain Assistant Started")
