@@ -1305,6 +1305,17 @@ class Brain:
                 "SUCCESS"
             )
 
+            self.send_notification(
+
+                "INFO" ,
+
+                service_name ,
+
+                service_name + " recovered successfully" ,
+
+                "SUCCESS"
+            )
+
             return "SERVICE RECOVERD SUCCESSFULLY"
         
 
@@ -1313,6 +1324,17 @@ class Brain:
             "AUTO_RECOVERY" ,
 
             service_name ,
+
+            "FAILED"
+        )
+
+        self.send_notification(
+
+            "CRITICAL" ,
+
+            service_name ,
+
+            service_name + " recovery failed"
 
             "FAILED"
         )
