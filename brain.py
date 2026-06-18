@@ -1646,12 +1646,6 @@ class Brain:
 
         report += "\n"
 
-        report += "[RELIABILITY ANALYTICS]\n\n"
-
-        report += self.recovery_success_rate()
-
-        report += "\n\n"
-
         report += self.service_reliability_report()
 
         report += "\n"
@@ -1734,7 +1728,7 @@ class Brain:
 
             return "NO SERVICE FAILURE RECORDED"
         
-        report = "\n[SERVICE RELIABILITY]\n\n"
+        report = "\n[SERVICE RELIABILITY ANALYTICS]\n\n"
 
         for service ,count in failure_counts.items():
 
