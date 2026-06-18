@@ -228,7 +228,7 @@ def live_monitor( parts , brain):
 
     while True:
 
-        os.system("cls")
+        os.system("clear")
 
         system_info = brain.get_system_info()
 
