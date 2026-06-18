@@ -1826,6 +1826,44 @@ class Brain:
         self.save_notifications()
 
 
+    def show_notifications(self):
+
+        if len(self.notifications) == 0:
+
+            return "NO NOTIFICATIONS RECORDED"
+        
+        lines = []
+
+        lines.append(
+
+            f"{'TIMESTAMP':25}"
+            f"{'SEVERITY':12}"
+            f"{'SERVICE':15}"
+            f"{'RECOVERY':15}"
+            f"{'MESSAGE'}"
+        )
+
+        lines.append("-" * 100)
+
+        recent_notifications = self.notifications[-20:]
+
+
+        for notification in recent_notifications:
+
+            line =(
+
+                f"{notification['timestamp']:25}"
+                f"{notification['severity']:12}"
+                f"{notification['service']:15}"
+                f"{notification['recovery_status']:15}"
+                f"{notification['message']}"
+            )
+
+            lines.append(line)
+
+        return "\n".join(lines)
+
+
 
 
 

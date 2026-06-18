@@ -38,6 +38,7 @@ def help_command(parts , brain):
     print("/audit")
     print("/reliability")
     print("/clear-audit")
+    print("/notifications")
 
 
 #LEARN
@@ -684,6 +685,12 @@ def clear_audit_command(parts ,brain):
 
     print(result)
 
+
+def notifications_command(parts ,brain):
+
+    print("\n[NOTIFICATIONS]\n")
+
+    print(brain.show_notifications())
 
 
     
