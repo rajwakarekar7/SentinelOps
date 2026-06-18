@@ -36,7 +36,7 @@ class Brain:
 
         self.notification_file = "notification.json"
 
-        self.notification = self.load_notification()
+        self.notifications = self.load_notification()
 
         self.config = self.load_config()
 
@@ -1351,6 +1351,17 @@ class Brain:
                         "INACTIVE"
                     )
 
+                    self.send_notification(
+
+                        "CRITICAL",
+
+                        service ,
+
+                        service + " service failed",
+
+                        "PENDING"
+                    )
+
                     recovery_result = self.restart_service(service)
 
                     log(
@@ -1754,13 +1765,65 @@ class Brain:
 
             with open(self.notification_file , "r") as file:
 
-                self.notification = json.dump(file)
+                self.notifications = json.load(file)
 
         except:
 
-            self.notification = []
+            self.notifications = []
 
-        return self.notification
+        return self.notifications
+
+
+    def save_notifications(self):
+
+        with open(self.notification_file , "w") as file:
+
+            json.dump(
+
+                self.notifications ,
+
+                file ,
+
+                indent=4
+            )
+
+
+    def send_notification(
+            
+            self,
+
+            severity ,
+
+            service,
+
+            message,
+
+            recovery_status
+            
+    ):
+        
+        notificaton = {
+
+            "timestamp": time.strftime(
+
+                "%Y-%m-%d %H:%M:%S"
+            ),
+
+            "severity": severity,
+
+            "service": service,
+
+            "message": message,
+
+            "recovery_status": recovery_status
+        }
+
+        self.notifications.append(
+
+            notificaton
+        )
+
+        self.save_notifications()
 
 
 
