@@ -37,6 +37,7 @@ def help_command(parts , brain):
     print("/savereport")
     print("/audit")
     print("/reliability")
+    print("/clear-audit")
 
 
 #LEARN

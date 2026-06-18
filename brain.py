@@ -34,6 +34,10 @@ class Brain:
 
         self.audit_file = "audit_trail.json"
 
+        self.notification_file = "notification.json"
+
+        self.notification = self.load_notification()
+
         self.config = self.load_config()
 
         self.resolved_alerts = []
@@ -1742,6 +1746,23 @@ class Brain:
         self.save_audit_trail()
 
         return "AUDIT TRAIL CLEARED SUCCESSFULLY"
+    
+
+    def load_notification(self):
+
+        try:
+
+            with open(self.notification_file , "r") as file:
+
+                self.notification = json.dump(file)
+
+        except:
+
+            self.notification = []
+
+        return self.notification
+
+
 
 
 
