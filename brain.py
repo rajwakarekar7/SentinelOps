@@ -479,7 +479,7 @@ class Brain:
 
         return{
            "service": service_name,
-            "status": "INACTIVE"
+            "status": service_status.upper()
         }
     
 
@@ -1349,7 +1349,7 @@ class Brain:
 
             result = self.check_service(service)
 
-            if result["status"] == "INACTIVE":
+            if result["status"] in [ "INACTIVE" , "FAILED"]:
 
                 if service not in self.failed_services:
 
@@ -1370,7 +1370,7 @@ class Brain:
 
                         service ,
 
-                        "INACTIVE"
+                        result["status"]
                     )
 
                     self.send_notification(
@@ -1493,7 +1493,7 @@ class Brain:
 
             result = self.check_service(service)
 
-            if result["status"] == "INACTIVE":
+            if result["status"] in ["INACTIVE" , "FAILED"]:
 
                 score -= 15
 
