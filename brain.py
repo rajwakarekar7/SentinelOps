@@ -1644,6 +1644,30 @@ class Brain:
 
         )
 
+        report += "\n"
+
+        report += "[RELIABILITY ANALYTICS]\n\n"
+
+        report += self.recovery_success_rate()
+
+        report += "\n\n"
+
+        report += self.service_reliability_report()
+
+        report += "\n"
+
+        report += "\n[RECENT AUDIT EVENTS]\n\n"
+
+        report += self.get_recent_audit_events()
+
+        report += "\n\n"
+
+        report += "[RECENT NOTIFICATIONS]\n\n"
+
+        report += self.get_recent_notifications()
+
+        report += "\n"
+
         return report
     
     
@@ -1879,6 +1903,72 @@ class Brain:
                 f"{notification['service']:15}"
                 f"{notification['recovery_status']:15}"
                 f"{notification['message']}"
+            )
+
+            lines.append(line)
+
+        return "\n".join(lines)
+    
+
+    def get_recent_audit_events(self):
+
+        recent_events = self.audit_trail[-5:]
+
+        lines = []
+
+        for event in recent_events:
+
+            line = (
+
+                event["timestamp"]
+
+                + " | "
+
+                + event["event"]
+
+                + " | "
+
+                + event["target"]
+
+                + " | "
+
+                + event["status"]
+
+            )
+
+            lines.append(line)
+
+        return "\n".join(lines)
+    
+
+    def get_recent_notifications(self):
+
+        recent_notifications = self.notifications[-5:]
+
+        lines = []
+
+        for event in recent_notifications:
+
+            line = (
+
+                event["timestamp"]
+
+                + " | "
+
+                + event["severity"]
+
+                + " | "
+
+                + event["service"]
+
+                + " | "
+
+                + event["recovery_status"]
+
+                + " | "
+
+                + event["message"]
+
             )
 
             lines.append(line)
