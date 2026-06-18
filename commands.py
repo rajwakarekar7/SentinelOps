@@ -671,9 +671,20 @@ def reliability_command(parts , brain):
 
     print(brain.service_reliability_report())
 
+
 def recoveryrate_command(parts, brain):
 
     print(brain.recovery_success_rate())
+
+
+def clear_audit_command(parts ,brain):
+
+    result = brain.clear_audit_trail()
+
+    print(result)
+
+
+
     
     
 

@@ -1735,6 +1735,15 @@ class Brain:
         )
 
 
+    def clear_audit_trail(self):
+
+        self.audit_trail = []
+
+        self.save_audit_trail()
+
+        return "AUDIT TRAIL CLEARED SUCCESSFULLY"
+
+
 
 
     
