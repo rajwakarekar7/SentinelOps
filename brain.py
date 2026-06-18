@@ -1334,7 +1334,7 @@ class Brain:
 
             service_name ,
 
-            service_name + " recovery failed"
+            service_name + " recovery failed" ,
 
             "FAILED"
         )
