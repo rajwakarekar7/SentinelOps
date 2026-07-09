@@ -1,11 +1,22 @@
-**pycache**/
-*.pyc
+# Python
+__pycache__/
+*.py[cod]
 
-logs/
-reports/
-
-backup*/
+# Logs
 *.log
 
+# Generated reports
+system_report.txt
+
+# Runtime data (generated while SentinelOps runs)
+audit_trail.json
+notification.json
+
+# IDE
 .vscode/
+
+# Environment
 .env
+
+# Backup files
+backup*/
