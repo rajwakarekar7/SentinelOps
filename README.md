@@ -6,6 +6,16 @@ The project simulates real-world observability and DevOps concepts including tel
 
 SentinelOps was built as a practical infrastructure engineering project focused on Linux administration, RHCSA preparation, observability engineering, and infrastructure automation learning.
 
+## Key Capabilities
+
+- Monitor Linux system resources
+- Monitor critical services
+- Detect service failures
+- Automatically recover failed services
+- Record audit events
+- Generate operational notifications
+- Analyze service reliability
+- Generate and export operational reports
 
 ## Features
 
@@ -175,7 +185,7 @@ Reliability analytics updated
 Operational report available
 ```
 
-### Example Scenario
+### Incident Recovery Example
 
 1. nginx service unexpectedly stops.
 2. SentinelOps detects the unhealthy service.
@@ -387,7 +397,7 @@ Example Usage:
 >>> /dashboard
 >>> /report
 >>> /recover nginx
->>> /service apache
+>>> /service nginx
 >>> /savereport
 ```
 
@@ -418,7 +428,6 @@ Example Usage:
 
 ## Skills Demonstrated
 
-```text
 • Linux System Administration
 • Service Management (systemd)
 • Infrastructure Monitoring
@@ -429,17 +438,17 @@ Example Usage:
 • JSON Persistence
 • CLI Application Development
 • Operational Reporting
-```
 
 
 ## Future Improvements
-```text
-Web-based dashboard
-REST API
-Email/Slack notifications
-Docker/Kubernetes monitoring
-Prometheus integration
-```
+
+- Web-based monitoring dashboard
+- REST API for remote monitoring
+- Email and Slack alert integration
+- Docker and Kubernetes monitoring
+- Prometheus metrics exporter
+- Multi-node infrastructure monitoring
+- Role-based authentication
 
 ## Project Goals
 
