@@ -187,107 +187,6 @@ Operational report available
 8. The incident appears in operational reports.
 
 
-## Available Commands
-
-### System Monitoring
-
-```text
-/dashboard            Display centralized infrastructure dashboard
-/live                 Start live system monitoring
-/telemetry            Show CPU, memory, and disk telemetry history
-/average cpu          Display average CPU utilization
-/peak cpu             Display peak CPU usage
-/stability cpu        Analyze CPU stability trends
-```
-
-### Service Management
-
-```text
-/services             Display status of monitored services
-/service nginx        Show detailed service information
-/monitor              Start background service monitoring
-/recover nginx        Restart a service manually
-/kill <service>         Safely terminate a non-protected process
-```
-
-### Incident & Reliability
-
-```text
-/alerts               Display active alerts
-/incidentstats        Show active incident statistics
-/resolvedstats        Show resolved incident statistics
-/audit                Display audit trail
-/reliability          Show service reliability analytics
-/recoveryrate         Display recovery success rate
-/notifications        Show notification history
-```
-
-### Reporting
-
-```text
-/report               Generate operational report
-/savereport           Export report to file
-```
-
-### System
-
-```text
-/exit                 Shut down SentinelOps
-```
-
-Example Usage:
-
-```text
->>> /dashboard
->>> /report
->>> /recover nginx
->>> /service apache
->>> /savereport
-```
-
-
-## Technologies Used
-
-```text
-Programming
-- Python 3
-
-Libraries
-- psutil
-- threading
-- subprocess
-- json
-- shutil
-- datetime
-
-Platform
-- Linux
-- systemd
-- CLI
-
-Concepts
-- Infrastructure Monitoring
-- Observability
-- Incident Management
-- Self-Healing Systems
-- Reliability Engineering
-```
-
-## Skills Demonstrated
-
-```text
-• Linux System Administration
-• Service Management (systemd)
-• Infrastructure Monitoring
-• Observability Engineering
-• Incident Lifecycle Management
-• Self-Healing Automation
-• Multithreading
-• JSON Persistence
-• CLI Application Development
-• Operational Reporting
-```
-
 ## Installation
 
 ### Prerequisites
@@ -433,6 +332,105 @@ Generates a complete operational report containing:
 ```
 
 Exports the operational report for future reference.
+
+## Available Commands
+
+### System Monitoring
+
+```text
+/dashboard            Display centralized infrastructure dashboard
+/live                 Start live system monitoring
+/telemetry            Show CPU, memory, and disk telemetry history
+/average cpu          Display average CPU utilization
+/peak cpu             Display peak CPU usage
+/stability cpu        Analyze CPU stability trends
+```
+
+### Service Management
+
+```text
+/services             Display status of monitored services
+/service nginx        Show detailed service information
+/monitor              Start background service monitoring
+/recover nginx        Restart a service manually
+/kill <service>         Safely terminate a non-protected process
+```
+
+### Incident & Reliability
+
+```text
+/alerts               Display active alerts
+/incidentstats        Show active incident statistics
+/resolvedstats        Show resolved incident statistics
+/audit                Display audit trail
+/reliability          Show service reliability analytics
+/recoveryrate         Display recovery success rate
+/notifications        Show notification history
+```
+
+### Reporting
+
+```text
+/report               Generate operational report
+/savereport           Export report to file
+```
+
+### System
+
+```text
+/exit                 Shut down SentinelOps
+```
+
+Example Usage:
+
+```text
+>>> /dashboard
+>>> /report
+>>> /recover nginx
+>>> /service apache
+>>> /savereport
+```
+
+## Technologies Used
+
+### Programming Language
+
+- Python 3
+
+### Libraries
+
+- psutil
+- threading
+
+### Platform
+
+- Linux
+- systemd
+- CLI
+
+### Concepts
+
+- Infrastructure Monitoring
+- Observability
+- Incident Management
+- Reliability Engineering
+
+
+## Skills Demonstrated
+
+```text
+• Linux System Administration
+• Service Management (systemd)
+• Infrastructure Monitoring
+• Observability Engineering
+• Incident Lifecycle Management
+• Self-Healing Automation
+• Multithreading
+• JSON Persistence
+• CLI Application Development
+• Operational Reporting
+```
+
 
 ## Future Improvements
 ```text
