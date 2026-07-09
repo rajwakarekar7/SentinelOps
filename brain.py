@@ -191,7 +191,7 @@ class Brain:
 
                 category_count[category] = 1
 
-        result = "Total Memeories: " + str(total) + "\n\n"
+        result = "Total Memories: " + str(total) + "\n\n"
 
         for category in category_count:
 
@@ -417,7 +417,7 @@ class Brain:
 
         except:
 
-            service_status = "unknow"
+            service_status = "unknown"
             
 
         for process in psutil.process_iter():
@@ -948,7 +948,7 @@ class Brain:
 
         self.monitoring = False
 
-        log("Background monitor stooped")
+        log("Background monitor stopped")
 
 
     def get_average_cpu(self):
@@ -1316,7 +1316,7 @@ class Brain:
                 "SUCCESS"
             )
 
-            return "SERVICE RECOVERD SUCCESSFULLY"
+            return "SERVICE RECOVERED SUCCESSFULLY"
         
 
         self.log_audit_event(
@@ -1340,7 +1340,7 @@ class Brain:
         )
         
         
-        return "SERVICE RECOVEREY FAILED"
+        return "SERVICE RECOVERY FAILED"
     
     
     def monitor_services(self):

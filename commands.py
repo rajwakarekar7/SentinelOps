@@ -436,10 +436,18 @@ def kill_command(parts , brain):
 
 def monitor_command(parts ,brain):
 
+    if brain.monitoring:
+
+        print("MONITOR ALREADY RUNNING")
+
+        return
+
     monitor_thread = threading.Thread(
-        
-        target= brain.start_background_monitor
-        
+            
+        target= brain.start_background_monitor,
+
+        daemon = True
+            
     )
 
     monitor_thread.start()

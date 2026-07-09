@@ -1,4 +1,6 @@
-print("STARTING")
+print("\n=== SentinelOps ===")
+print("Linux Monitoring & Self-Healing Platform")
+print()
 
 from brain import Brain
 
@@ -45,7 +47,7 @@ commands = {
     "/notifications": notifications_command
 }
 
-print("Smart Brain Assistant Started")
+print("SentinelOps Started")
 
 while True:
 

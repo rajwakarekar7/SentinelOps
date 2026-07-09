@@ -14,5 +14,9 @@
     "python": {
         "meaning": "a programming language",
         "category": "technology"
+    },
+    "windows": {
+        "meaning": "operating system",
+        "category": "technology"
     }
 }
