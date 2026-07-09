@@ -34,23 +34,25 @@ SentinelOps is designed using a modular infrastructure-oriented architecture whe
 
 ### Core Components
 
+```text
+
 Components        Responsibility
 
-brain.py	        Monitoring engine, analytics, service recovery, reporting
+brain.py	  Monitoring engine, analytics, service recovery, reporting
 
 main.py           Application entry point and command loop
 
-commands.py	      CLI command routing
+commands.py	  CLI command routing
 
-logger.py	        Operational logging
+logger.py	  Operational logging
 
-memory.py	        Persistent knowledge storage
+memory.py	  Persistent knowledge storage
 
 nlp.py	          Natural language command translation
 
-utils.py	        Shared helper functions
+utils.py	  Shared helper functions
 
-config.json 	    Monitoring thresholds and policies
+config.json 	  Monitoring thresholds and policies
 
 alerts.json       Active alert persistence
 
@@ -60,36 +62,45 @@ notification.json Persistent notification history
 
 memory.json 	  Knowledge base storage
 
+```
+
 
 ### Operational Flow
 
-User
-        │
-        ▼
-+--------------------+
-|   Command Router   |
-|   (commands.py)    |
-+--------------------+
-        │
-        ▼
-+--------------------+
-|     Brain.py       |
-| Core Engine        |
-+--------------------+
-        │
- ┌──────┼───────────────┬───────────────┬───────────────┐
- │      │               │               │               │
- ▼      ▼               ▼               ▼               ▼
-Monitoring   Alert Engine   Auto Recovery   Notifications   Audit Trail
- │
- ▼
-Analytics
- │
- ▼
-Reports
- │
- ▼
-JSON Storage
+```mermaid
+flowchart TD
+
+A[User]
+B[Command Router]
+C[Brain Engine]
+
+D[Monitoring]
+E[Alert Engine]
+F[Auto Recovery]
+G[Notifications]
+H[Audit Trail]
+I[Analytics]
+J[Reports]
+K[JSON Storage]
+
+A --> B
+B --> C
+
+C --> D
+C --> E
+C --> F
+C --> G
+C --> H
+
+D --> I
+E --> I
+F --> I
+G --> I
+H --> I
+
+I --> J
+J --> K
+```
 
 ### Monitoring Capabilities
 
@@ -111,6 +122,8 @@ JSON Storage
 
 
 ## Operational Workflow
+
+```text
 
 Service Failure
         │
@@ -138,6 +151,8 @@ Reliability analytics updated
         ▼
 Operational report available
 
+```
+
 ### Example Scenario
 
 1. nginx service unexpectedly stops.
@@ -152,6 +167,7 @@ Operational report available
 
 ## Available Commands
 
+```text
 
 /dashboard  	    Display centralized infrastructure dashboard
 
@@ -181,14 +197,19 @@ Operational report available
 
 /exit	            Shut down SentinelOps monitoring system
 
+```
 
 Example Usage:
+
+```text
 
 >>> /dashboard
 >>> /report
 >>> /recover nginx
 >>> /service apache
 >>> /savereport
+
+```
 
 
 ## Technologies Used
