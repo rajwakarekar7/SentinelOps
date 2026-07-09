@@ -435,12 +435,13 @@ Generates a complete operational report containing:
 Exports the operational report for future reference.
 
 ## Future Improvements
-
+```text
 Web-based dashboard
 REST API
 Email/Slack notifications
 Docker/Kubernetes monitoring
 Prometheus integration
+```
 
 ## Project Goals
 
