@@ -9,23 +9,49 @@ SentinelOps was built as a practical infrastructure engineering project focused 
 
 ## Features
 
-* Infrastructure Monitoring
+### Infrastructure Monitoring
+- Real-time CPU, memory, and disk monitoring
+- Critical Linux service monitoring
+- Operational health scoring
 
-* Service Monitoring
+### Service Monitoring
+- Monitor critical system services
+- Service health analysis
+- Runtime and resource inspection
 
-* Incident Management
+### Incident Management
+- Active and resolved incident tracking
+- Incident lifecycle management
+- Persistent incident history
 
-* Autonomous Recovery
+### Autonomous Recovery
+- Automatic service restart
+- Recovery verification
+- Controlled recovery policies
 
-* Audit & Notification System
+### Audit & Notification System
+- Persistent audit trail
+- Critical and informational notifications
+- Recovery event logging
 
-* Operational Analytics
+### Operational Analytics
+- Reliability analytics
+- Recovery success rate
+- Most unstable service detection
+- Health trend analysis
 
-* Reporting & Export
+### Reporting & Export
+- Operational report generation
+- Report export
+- Recent audit and notification summaries
 
-* Predictive Intelligence
+### Predictive Intelligence
+- Infrastructure trend analysis
+- Predictive health status
 
-* Persistence
+### Persistence
+- JSON-based persistent storage
+- Configuration-driven monitoring
 
 
 ## Architecture
@@ -35,7 +61,6 @@ SentinelOps is designed using a modular infrastructure-oriented architecture whe
 ### Core Components
 
 ```text
-
 Components        Responsibility
 
 brain.py	  Monitoring engine, analytics, service recovery, reporting
@@ -61,7 +86,6 @@ audit_trail.json  Persistent audit events
 notification.json Persistent notification history
 
 memory.json 	  Knowledge base storage
-
 ```
 
 
@@ -124,7 +148,6 @@ J --> K
 ## Operational Workflow
 
 ```text
-
 Service Failure
         │
         ▼
@@ -150,7 +173,6 @@ Reliability analytics updated
         │
         ▼
 Operational report available
-
 ```
 
 ### Example Scenario
@@ -167,76 +189,258 @@ Operational report available
 
 ## Available Commands
 
+### System Monitoring
+
 ```text
+/dashboard            Display centralized infrastructure dashboard
+/live                 Start live system monitoring
+/telemetry            Show CPU, memory, and disk telemetry history
+/average cpu          Display average CPU utilization
+/peak cpu             Display peak CPU usage
+/stability cpu        Analyze CPU stability trends
+```
 
-/dashboard  	    Display centralized infrastructure dashboard
+### Service Management
 
-/telemetry  	    Show telemetry history for CPU, memory, and disk
+```text
+/services             Display status of monitored services
+/service nginx        Show detailed service information
+/monitor              Start background service monitoring
+/recover nginx        Restart a service manually
+/kill <service>         Safely terminate a non-protected process
+```
 
-/alerts     	    Display active operational incidents
+### Incident & Reliability
 
-/incidentstats	  Show active incident analytics
+```text
+/alerts               Display active alerts
+/incidentstats        Show active incident statistics
+/resolvedstats        Show resolved incident statistics
+/audit                Display audit trail
+/reliability          Show service reliability analytics
+/recoveryrate         Display recovery success rate
+/notifications        Show notification history
+```
 
-/resolvedstats	  Show resolved incident analytics
+### Reporting
 
-/average cpu	    Display average CPU utilization
+```text
+/report               Generate operational report
+/savereport           Export report to file
+```
 
-/peak cpu	        Display peak CPU usage
+### System
 
-/stability cpu	  Analyze CPU stability trends
-
-/service nginx	  Check service operational status
-
-/recover nginx	  Attempt autonomous service recovery
-
-/report           Generate operational infrastructure report
-
-/savereport	      Export persistent operational report
-
-/kill process	    Terminate non-protected processes safely
-
-/exit	            Shut down SentinelOps monitoring system
-
+```text
+/exit                 Shut down SentinelOps
 ```
 
 Example Usage:
 
 ```text
-
 >>> /dashboard
 >>> /report
 >>> /recover nginx
 >>> /service apache
 >>> /savereport
-
 ```
 
 
 ## Technologies Used
 
-* Python
-* psutil
-* threading
-* JSON persistence
-* File handling
-* CLI-based architecture
-* Infrastructure monitoring concepts
-* Observability engineering concepts
-* Incident lifecycle management
-* Predictive operational analytics
+```text
+Programming
+- Python 3
+
+Libraries
+- psutil
+- threading
+- subprocess
+- json
+- shutil
+- datetime
+
+Platform
+- Linux
+- systemd
+- CLI
+
+Concepts
+- Infrastructure Monitoring
+- Observability
+- Incident Management
+- Self-Healing Systems
+- Reliability Engineering
+```
+
+## Skills Demonstrated
+
+```text
+• Linux System Administration
+• Service Management (systemd)
+• Infrastructure Monitoring
+• Observability Engineering
+• Incident Lifecycle Management
+• Self-Healing Automation
+• Multithreading
+• JSON Persistence
+• CLI Application Development
+• Operational Reporting
+```
+
+## Installation
+
+### Prerequisites
+
+Before running SentinelOps, ensure your system meets the following requirements:
+
+- Linux operating system (Recommended: Rocky Linux, RHEL, Fedora, Ubuntu)
+- Python 3.10 or later
+- `systemd` service manager
+- Sudo privileges (required for automatic service recovery)
+
+---
+
+### Clone the Repository
+
+```bash
+git clone https://github.com/rajwakarekar7/SentinelOps.git
+
+cd SentinelOps
+```
+
+---
+
+### Install Dependencies
+
+Install the required Python packages:
+
+```bash
+pip install -r requirements.txt
+```
+
+---
+
+### Configure Sudo Permissions
+
+SentinelOps monitors and manages Linux services using `systemctl`.
+
+To enable automatic service recovery, run SentinelOps with appropriate sudo privileges or configure passwordless sudo for the required `systemctl` commands.
+
+---
+
+### Run SentinelOps
+
+Start the application:
+
+```bash
+python main.py
+```
+
+After startup, you should see the SentinelOps banner and command prompt.
+
+---
+
+### Verify Installation
+
+Run a few commands to verify the installation:
+
+```text
+>>> /dashboard
+>>> /services
+>>> /service nginx
+>>> /monitor
+>>> /report
+```
+
+If these commands execute successfully, SentinelOps is ready to monitor your Linux system.
+
+## Quick Start
+
+The following workflow demonstrates the complete SentinelOps monitoring lifecycle.
+
+### 1. View the System Dashboard
+
+```text
+>>> /dashboard
+```
+
+Displays the current system health, resource utilization, monitored services, and operational status.
+
+---
+
+### 2. Start Background Monitoring
+
+```text
+>>> /monitor
+```
+
+Starts continuous monitoring of configured Linux services.
+
+---
+
+### 3. Simulate a Service Failure
+
+Open another terminal and stop a monitored service:
+
+```bash
+sudo systemctl stop nginx
+```
+
+SentinelOps automatically detects the unhealthy service and attempts recovery.
+
+---
+
+### 4. Review Notifications
+
+```text
+>>> /notifications
+```
+
+Displays generated operational notifications, including service failures and recovery events.
+
+---
+
+### 5. Review the Audit Trail
+
+```text
+>>> /audit
+```
+
+Displays a chronological history of operational events.
+
+---
+
+### 6. Generate an Operational Report
+
+```text
+>>> /report
+```
+
+Generates a complete operational report containing:
+
+- System health
+- Reliability analytics
+- Recent audit events
+- Recent notifications
+
+---
+
+### 7. Export the Report
+
+```text
+>>> /savereport
+```
+
+Exports the operational report for future reference.
 
 ## Future Improvements
 
-* Linux-native service management using `systemctl`
-* Flask-based web dashboard
-* Docker container monitoring
-* Real-time log analysis
-* Email alert integration
-* Database-backed incident storage
-* Multi-node infrastructure monitoring
-* Grafana-style visualization interface
-* SSH-based remote infrastructure monitoring
-* Authentication and role-based access control
+Web-based dashboard
+REST API
+Email/Slack notifications
+Docker/Kubernetes monitoring
+Prometheus integration
 
 ## Project Goals
 
@@ -252,5 +456,9 @@ SentinelOps was developed as a practical infrastructure engineering and observab
 
 ## Author
 
-Developed as a hands-on infrastructure monitoring and observability platform project for practical systems engineering learning and portfolio development.
+Developed by Rajvardhan Vakarekar as part of a hands-on Linux System Administration, RHCSA preparation, and Infrastructure Engineering learning journey.
+
+The project focuses on applying practical DevOps, observability, and reliability engineering concepts through real-world system monitoring and self-healing workflows.
+
+
 
