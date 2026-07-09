@@ -9,51 +9,23 @@ SentinelOps was built as a practical infrastructure engineering project focused 
 
 ## Features
 
-### Infrastructure Monitoring
+* Infrastructure Monitoring
 
-* Real-time CPU monitoring
-* Memory utilization tracking
-* Disk usage monitoring
-* Critical service monitoring
+* Service Monitoring
 
-### Observability & Analytics
+* Incident Management
 
-* Telemetry history tracking
-* Average and peak resource analytics
-* Infrastructure stability analysis
-* Operational health scoring
-* Health trend analysis
+* Autonomous Recovery
 
-### Incident Management
+* Audit & Notification System
 
-* Active incident tracking
-* Resolved incident history
-* Structured incident lifecycle management
-* Timestamp-based incident logging
+* Operational Analytics
 
-### Autonomous Remediation
+* Reporting & Export
 
-* Safe service recovery workflows
-* Automatic service restart attempts
-* Controlled recovery policies
+* Predictive Intelligence
 
-### Predictive Intelligence
-
-* Infrastructure degradation detection
-* Predictive operational alerts
-* Trend-based risk analysis
-
-### Dashboard & Reporting
-
-* Centralized observability dashboard
-* Operational report generation
-* Persistent report export system
-
-### Persistence & Configuration
-
-* JSON-based persistent storage
-* Configuration-driven monitoring policies
-* Persistent operational state tracking
+* Persistence
 
 
 ## Architecture
@@ -62,44 +34,62 @@ SentinelOps is designed using a modular infrastructure-oriented architecture whe
 
 ### Core Components
 
-Components      Responsibility
+Components        Responsibility
 
-brain.py	      Core monitoring, analytics, remediation, and observability engine
+brain.py	        Monitoring engine, analytics, service recovery, reporting
 
-commands.py	    Command routing and CLI interaction layer
+main.py           Application entry point and command loop
 
-logger.py	      Operational logging system
+commands.py	      CLI command routing
 
-memory.py	      Persistent memory management
+logger.py	        Operational logging
 
-nlp.py	        Natural language command processing
+memory.py	        Persistent knowledge storage
 
-utils.py	      Shared utility functions
+nlp.py	          Natural language command translation
 
-config.json 	  Configuration-driven monitoring policies
+utils.py	        Shared helper functions
 
-alerts.json  	  Persistent active incident storage
+config.json 	    Monitoring thresholds and policies
 
-memory.json 	  Persistent assistant memory storage
+alerts.json       Active alert persistence
+
+audit_trail.json  Persistent audit events
+
+notification.json Persistent notification history
+
+memory.json 	  Knowledge base storage
 
 
 ### Operational Flow
 
-Telemetry Collection
-↓
-Infrastructure Analytics
-↓
-Incident Detection
-↓
-Health Scoring & Trend Analysis
-↓
-Predictive Risk Analysis
-↓
-Autonomous Remediation
-↓
-Dashboard & Reporting
-↓
-Persistent Operational Storage
+User
+        │
+        ▼
++--------------------+
+|   Command Router   |
+|   (commands.py)    |
++--------------------+
+        │
+        ▼
++--------------------+
+|     Brain.py       |
+| Core Engine        |
++--------------------+
+        │
+ ┌──────┼───────────────┬───────────────┬───────────────┐
+ │      │               │               │               │
+ ▼      ▼               ▼               ▼               ▼
+Monitoring   Alert Engine   Auto Recovery   Notifications   Audit Trail
+ │
+ ▼
+Analytics
+ │
+ ▼
+Reports
+ │
+ ▼
+JSON Storage
 
 ### Monitoring Capabilities
 
@@ -118,6 +108,46 @@ Persistent Operational Storage
 * Autonomous service recovery workflows
 * Controlled remediation policies
 * Persistent operational reporting
+
+
+## Operational Workflow
+
+Service Failure
+        │
+        ▼
+SentinelOps detects unhealthy service
+        │
+        ▼
+Incident is recorded
+        │
+        ▼
+Critical notification generated
+        │
+        ▼
+Automatic recovery initiated
+        │
+        ▼
+Recovery status verified
+        │
+        ▼
+Audit trail updated
+        │
+        ▼
+Reliability analytics updated
+        │
+        ▼
+Operational report available
+
+### Example Scenario
+
+1. nginx service unexpectedly stops.
+2. SentinelOps detects the unhealthy service.
+3. A critical notification is generated.
+4. An audit event is recorded.
+5. Automatic recovery is attempted.
+6. Service health is verified.
+7. Recovery statistics are updated.
+8. The incident appears in operational reports.
 
 
 ## Available Commands
