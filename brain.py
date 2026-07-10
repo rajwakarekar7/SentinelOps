@@ -30,11 +30,15 @@ class Brain:
 
         self.last_disk_alert = 0
 
-        self.active_alerts = self.load_alerts()
-
         self.audit_file = "audit_trail.json"
 
         self.notification_file = "notification.json"
+
+        self.alert_file = "alerts.json"
+
+        self.ensure_runtime_files()
+
+        self.active_alerts = self.load_alerts()
 
         self.notifications = self.load_notification()
 
@@ -42,9 +46,7 @@ class Brain:
 
         self.resolved_alerts = []
 
-        self.audit_trail = []
-
-        self.load_audit_trail()
+        self.audit_trail = self.load_audit_trail()
 
         self.recoverable_services ={
 
@@ -74,6 +76,26 @@ class Brain:
        
 
     
+    def ensure_runtime_files(self):
+
+        runtime_files = [
+
+            self.alert_file,
+
+            self.audit_file,
+
+            self.notification_file
+
+        ]
+
+        for file in runtime_files:
+
+            if not os.path.exists(file):
+
+                with open(file, "w") as f:
+
+                    json.dump([],f,indent=4)
+
 
     def learn(self, word ,meaning , category):
 
