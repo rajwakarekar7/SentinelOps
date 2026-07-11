@@ -1,7 +1,4 @@
-from memory import load_memory , save_memory
 from logger import log
-import shutil
-import datetime
 import psutil
 import time
 import json
@@ -11,10 +8,6 @@ import subprocess
 class Brain:
 
     def __init__(self):
-
-        self.memory = load_memory()
-
-        self.history = []
 
         self.monitoring = False
 
@@ -66,7 +59,11 @@ class Brain:
 
             "mysql" ,
 
-            "httpd"
+            "httpd" ,
+
+            "sshd" ,
+
+            "docker"
         ]
 
         self.health_history = []
@@ -97,165 +94,6 @@ class Brain:
                     json.dump([],f,indent=4)
 
 
-    def learn(self, word ,meaning , category):
-
-        self.memory[word]= {
-
-            "meaning": meaning ,
-            "category": category
-        }
-
-        save_memory(self.memory)
-
-        log("Learned "+ word)
-
-
-    def answer(self ,word):
-
-        if word in self.memory:
-
-            message = word.capitalize()+ " is " + self.memory[word]["meaning"]
-
-            self.history.append("question: " + word)
-            self.history.append("Answer: " + message)
-
-            log("Asked "+ word)
-
-            return message
-        
-        return "i don't Know"
-    
-    
-    def search(self ,text):
-
-        results = []
-
-        for key in self.memory:
-
-            meaning = self.memory[key]["meaning"]
-
-            if text in key or text in meaning:
-
-                results.append(key + "=" + meaning)
-            
-        if len(results) == 0:
-
-            return "No match found"
-        
-        return "\n".join(results)
-
-    
-    def show_memory(self):
-
-        for key in self.memory:
-
-            print(key + "=" + self.memory[key]["meaning"])
-
-
-    def show_history(self):
-
-        for item in self.history:
-
-            print(item)
-
-
-    def delete(self , word):
-
-        if word in self.memory:
-
-            del self.memory[word]
-
-            save_memory(self.memory)
-
-            log("Deleted "+ word)
-
-            return "Deleted Successfully"
-        
-        return " word not found"
-    
-
-    def show_category(self , category):
-
-        results= []
-
-        for key in self.memory:
-
-            current_category= self.memory[key]["category"]
-
-            if current_category == category:
-
-               meaning = self.memory[key]["meaning"]
-
-               results.append(key + "=" + meaning)
-
-        if len(results) == 0:
-
-            return " No words found"
-    
-        return "\n".join(results)
-    
-
-    def stats(self):
-
-        total = len(self.memory)
-
-        category_count = {}
-
-        for key in self.memory:
-
-            category = self.memory[key]["category"]
-
-            if category in category_count:
-
-                category_count[category] += 1
-
-            else:
-
-                category_count[category] = 1
-
-        result = "Total Memories: " + str(total) + "\n\n"
-
-        for category in category_count:
-
-            count = category_count[category]
-
-            result += category + ":" +str(count) + "\n"
-
-        return result
-    
-
-    def update(self , word , meaning , category):
-
-        if word in self.memory:
-
-            self.memory[word]["meaning"] = meaning
-
-            self.memory[word]["category"] = category
-
-            save_memory(self.memory)
-
-            log("updated " + word)
-
-            return word + " updated"
-        
-        return "Word not found"
-    
-    
-    def backup(self):
-
-        now = datetime.datetime.now()
-
-        timestamp = now.strftime("%Y_%m_%d_%H_%M_%S")
-
-        backup_name = "backup_" + timestamp + ".json"
-
-        shutil.copy("memory.json" , backup_name)
-
-        log("Backup created: " + backup_name)
-
-        return "Backup created " + backup_name
-    
-    
     def get_system_info(self):
         
         cpu = psutil.cpu_percent()
@@ -400,7 +238,7 @@ class Brain:
         }
     
 
-    def check_service(self , service_name):
+    def get_service_status(self , service_name):
 
         service_name = service_name.lower()
 
@@ -507,31 +345,17 @@ class Brain:
 
     def check_critical_services(self):
 
-        services = [
-
-            "sshd" ,
-
-            "docker" ,
-
-            "nginx" ,
-
-            "mysql" ,
-
-            "httpd"
-
-        ]
-
         results = []
 
-        for service in services:
+        for service in self.monitored_services:
 
-            result = self.check_service(service)
+            result = self.get_service_status(service)
 
             results.append(result)
 
         return results
-    
-    
+
+         
     def kill_service(self , service_name):
 
         service_name = service_name.lower()
@@ -589,6 +413,7 @@ class Brain:
             "service" : service_name,
             "status" : "NOT FOUND"
         }
+    
     
     def start_background_monitor(self):
 
@@ -1116,22 +941,18 @@ class Brain:
 
     def load_config(self):
 
-        file = open("config.json" , "r")
-
-        config = json.load(file)
-
-        file.close()
+        with open("config.json", "r") as file:
+            config = json.load(file)
 
         return config
     
 
     def save_alerts(self):
 
-        file = open("alerts.json" , "w")
+        with open("alerts.json", "w") as file:
 
-        json.dump(self.active_alerts , file)
+            json.dump(self.active_alerts, file, indent=4)
 
-        file.close()
 
 
     def log_audit_event(self, event ,target ,status):
@@ -1188,13 +1009,11 @@ class Brain:
     
     def load_alerts(self):
 
-        file = open("alerts.json" , "r")
+        with open("alerts.json", "r") as file:
 
-        alters = json.load(file)
+            alerts = json.load(file)
 
-        file.close()
-
-        return alters
+        return alerts
 
 
     def get_incident_stats(self):
@@ -1311,7 +1130,7 @@ class Brain:
             text=True
         )
 
-        result =self.check_service(service_name)
+        result =self.get_service_status(service_name)
         
 
         if result["status"] == "ACTIVE":
@@ -1369,7 +1188,7 @@ class Brain:
 
         for service in self.monitored_services:
 
-            result = self.check_service(service)
+            result = self.get_service_status(service)
 
             if result["status"] in [ "INACTIVE" , "FAILED"]:
 
@@ -1432,7 +1251,7 @@ class Brain:
 
         for service in self.monitored_services:
 
-            result = self.check_service(service)
+            result = self.get_service_status(service)
 
             services.append({
 
@@ -1513,7 +1332,7 @@ class Brain:
 
         for service in self.monitored_services:
 
-            result = self.check_service(service)
+            result = self.get_service_status(service)
 
             if result["status"] in ["INACTIVE" , "FAILED"]:
 
@@ -1693,11 +1512,9 @@ class Brain:
 
         filename = "system_report.txt"
 
-        file = open(filename , "w")
+        with open(filename, "w") as file:
 
-        file.write(report)
-
-        file.close()
+            file.write(report)
 
         return filename
     

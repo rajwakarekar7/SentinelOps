@@ -1,165 +1,67 @@
-from utils import *
+from utils import has_enough_parts, get_word
 import os
 import time
 from logger import log
 import threading
 
-#HELP
-def help_command(parts , brain):
+def help_command(parts, brain):
 
-    print("/learn word meaning category")
-    print("/ask word")
-    print("/search text")
-    print("/show")
-    print("/history")
-    print("/exit")
-    print("/delete word")
-    print("/category name")
-    print("/stats")
-    print("/word meaning category")
-    print("/backup")
-    print("/system")
-    print("/live")
-    print("/service")
-    print("/services")
-    print("/kill")
-    print("/monitor")
-    print("/telemetry")
-    print("/average cpu")
-    print("/peak cpu")
-    print("/stability cpu")
-    print("/alerts")
-    print("/incidentstats")
-    print("/resolvedstats")
-    print("/recover service")
-    print("/dashboard data")
-    print("/report")
-    print("/savereport")
-    print("/audit")
-    print("/reliability")
-    print("/clear-audit")
-    print("/notifications")
+    line = "=" * 50
+    section = "-" * 50
 
+    print("\n" + line)
+    print("                 SENTINELOPS HELP")
+    print(line)
 
-#LEARN
-def learn_command(parts , brain):        
+    print("\nSYSTEM MONITORING")
+    print(section)
+    print("/dashboard         View system dashboard")
+    print("/live              Start live monitoring")
+    print("/telemetry         View telemetry history")
 
-    if not has_enough_parts(parts , 2):
+    print("\nSERVICE MANAGEMENT")
+    print(section)
+    print("/services          List monitored services")
+    print("/service <name>    View service status")
+    print("/monitor           Start background monitoring")
+    print("/recover <name>    Recover a service")
+    print("/kill <process>    Safely terminate a process")
 
-        print("Usage: /learn word meaning category")
+    print("\nRESOURCE ANALYTICS")
+    print(section)
+    print("/average <metric>  Average resource usage")
+    print("/peak <metric>     Peak resource usage")
+    print("/stability <metric> Resource stability analysis")
 
-    else:
+    print("\nINCIDENT MANAGEMENT")
+    print(section)
+    print("/alerts            View active alerts")
+    print("/incidentstats     View incident statistics")
+    print("/resolvedstats     View resolved incidents")
+    print("/audit             View audit trail")
+    print("/notifications     View notification history")
 
-        word = get_word(parts)
+    print("\nREPORTING")
+    print(section)
+    print("/report            Generate operational report")
+    print("/savereport        Export report")
 
-        meaning = " ".join(parts[2:-1]).lower()
+    print("\nRELIABILITY")
+    print(section)
+    print("/reliability       Service reliability analytics")
+    print("/recoveryrate      Recovery success statistics")
+    print("/clear-audit       Clear audit history")
 
-        category = parts[-1].lower()
+    print("\nSYSTEM")
+    print(section)
+    print("/help              Show help")
+    print("/exit              Exit SentinelOps")
 
-        brain.learn(word, meaning , category)
-
-        print("Learned successfully")
-
-
-# ASK
-def ask_command(parts , brain):
-
-    if not has_enough_parts(parts , 2):
-
-        print("Usage: /ask word")
-
-    else:
-
-        word = get_word(parts)
-
-        print(brain.answer(word))
-
-
-# SEARCH
-def search_command(parts , brain):
-
-    if not has_enough_parts(parts, 2):
-
-        print("Usage: /search text")
-
-    else:
-
-        text = get_text(parts)
-
-        print(brain.search(text))
-
-
-# SHOW MEMORY
-def show_command(parts , brain):
-
-    brain.show_memory()
-
-
-# HISTORY
-def history_command(parts , brain):
-
-    brain.show_history()
-
-
-#CATEGORY
-def category_command(parts , brain):
-
-    if not has_enough_parts(parts , 2):
-
-        print("Usage: /category name")
-
-    else:
-
-        category = get_word(parts)
-
-        print(brain.show_category(category))
-
-
-#STATS
-def stats_command(parts , brain):
-
-    print(brain.stats())
-
-
-#DELETE
-def delete_command(parts , brain):
-
-    if not has_enough_parts(parts , 2):
-
-        print("Usage: /delete word")
-
-    else:
-
-        word =get_word(parts)
-
-        print(brain.delete(word))
-
-
-#UPDETE
-def update_command(parts , brain):
-
-    if len(parts) < 4 :
-
-        print("Usage: /update word meaning category")
-
-    else:
-
-        word = parts[1].lower()
-
-        meaning = " ".join(parts[2:-1]).lower()
-
-        category = parts[-1].lower()
-
-        print(brain.update(word , meaning , category))
-
-
-#BACKUP
-def backup_command(parts , brain):
-
-    print(brain.backup())
+    print("\n" + line)
 
 
 #SYSTEM_RESOURCE_USAGE
+
 def system_command(parts , brain):
     
     system_info = brain.get_system_info()
@@ -224,11 +126,12 @@ def system_command(parts , brain):
     
 
 #LIVE MONITORING TOOL
+
 def live_monitor( parts , brain):
 
     while True:
 
-        os.system("clear")
+        os.system("cls" if os.name == "nt" else "clear")
 
         system_info = brain.get_system_info()
 
@@ -366,6 +269,7 @@ def live_monitor( parts , brain):
 
 
 #PROCESSES MONITORING SYSTEM
+
 def service_command(parts, brain):
 
     if not has_enough_parts(parts , 2):
@@ -376,7 +280,7 @@ def service_command(parts, brain):
 
     service_name = get_word(parts)
 
-    result = brain.check_service(service_name)
+    result = brain.get_service_status(service_name)
 
     print("\n[SERVICE STATUS]\n")
     print("SERVICE:" , result["service"])
@@ -401,19 +305,20 @@ def service_command(parts, brain):
 
 
 #SERVICES DASHBOARD
+
 def services_command(parts , brain):
 
     results = brain.check_critical_services()
 
-    print("\n[CRITICAL SERVICES]\n")
+    line = "=" * 50
+    section = "-" * 50
 
-    for result in results:
+    print("\n" + line)
+    print("            MONITORED SERVICES")
+    print(line)
 
-        print(
-
-            f"{result['service']:15}"
-            f"{result['status']}"
-        )
+    print(f"{'Service':<18}Status")
+    print(section)
 
 
 def kill_command(parts , brain):
@@ -549,7 +454,7 @@ def alerts_command(parts , brain):
 
         print(
 
-            alert["timestamp"],
+            alert["start_time"],
 
             "|",
 
