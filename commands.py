@@ -612,48 +612,43 @@ def recover_command(parts , brain):
     print(result)
 
 
-def dashboard_command(parts , brain):
+def dashboard_command(parts, brain):
 
     data = brain.get_dashboard_data()
 
-    print("\n[SYSTEM DASHBOARD]\n")
+    print("\n" + "=" * 50)
+    print("         SENTINELOPS DASHBOARD")
+    print("=" * 50)
 
-    print("HEALTH SCORE:", data["health_score"], "/100")
+    print("\nSYSTEM HEALTH")
+    print("-" * 50)
 
-    print("SYSTEM HEALTH:", data["health"])
+    print(f"Health Score        : {data['health_score']}/100")
+    print(f"System Health       : {data['health']}")
+    print(f"Health Trend        : {data['trend']}")
+    print(f"Predictive Status   : {data['predictive']}")
 
-    print("HEALTH TREND:" , data["trend"])
+    print("\nSYSTEM RESOURCES")
+    print("-" * 50)
 
-    print("PREDICTIVE STATUS:" , data["predictive"])
+    print(f"CPU Usage           : {data['cpu']}%")
+    print(f"Memory Usage        : {data['memory']}%")
+    print(f"Disk Usage          : {data['disk']}%")
 
-    print()
+    print("\nINCIDENT SUMMARY")
+    print("-" * 50)
 
-    print("CPU:", data["cpu"], "%")
+    print(f"Active Alerts       : {data['active_alerts']}")
+    print(f"Resolved Incidents  : {data['resolved_alerts']}")
 
-    print("MEMORY:", data["memory"], "%")
-
-    print("DISK:", data["disk"], "%")
-
-    print()
-
-    print("ACTIVE ALERTS:", data["active_alerts"])
-
-    print("RESOLVED INCIDENTS:", data["resolved_alerts"])
-
-    print("\n[SERVICES]\n")
+    print("\nMONITORED SERVICES")
+    print("-" * 50)
 
     for service in data["services"]:
+        print(f"{service['name']:<18} {service['status']}")
 
-        print(
-
-            service["name"],
-
-            "->",
-
-            service["status"]
-
-        )
-
+    print("=" * 50)
+    
 
 def report_command(parts , brain):
 
