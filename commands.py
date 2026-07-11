@@ -616,12 +616,15 @@ def dashboard_command(parts, brain):
 
     data = brain.get_dashboard_data()
 
-    print("\n" + "=" * 50)
-    print("         SENTINELOPS DASHBOARD")
-    print("=" * 50)
+    line = "=" * 50
+    section = "-" * 50
+
+    print("\n" + line)
+    print("            SENTINELOPS DASHBOARD")
+    print(line)
 
     print("\nSYSTEM HEALTH")
-    print("-" * 50)
+    print(section)
 
     print(f"Health Score        : {data['health_score']}/100")
     print(f"System Health       : {data['health']}")
@@ -629,26 +632,28 @@ def dashboard_command(parts, brain):
     print(f"Predictive Status   : {data['predictive']}")
 
     print("\nSYSTEM RESOURCES")
-    print("-" * 50)
+    print(section)
 
     print(f"CPU Usage           : {data['cpu']}%")
     print(f"Memory Usage        : {data['memory']}%")
     print(f"Disk Usage          : {data['disk']}%")
 
     print("\nINCIDENT SUMMARY")
-    print("-" * 50)
+    print(section)
 
     print(f"Active Alerts       : {data['active_alerts']}")
     print(f"Resolved Incidents  : {data['resolved_alerts']}")
 
     print("\nMONITORED SERVICES")
-    print("-" * 50)
+    print(section)
+    print(f"{'Service':<18} Status")
+    print(section)
 
     for service in data["services"]:
         print(f"{service['name']:<18} {service['status']}")
 
-    print("=" * 50)
-    
+    print("\n" + line)
+
 
 def report_command(parts , brain):
 
