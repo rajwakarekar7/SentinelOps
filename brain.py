@@ -180,9 +180,10 @@ class Brain:
 
                 processes.append((name , cpu))
 
-            except:
-              
-              continue
+            except (psutil.NoSuchProcess,
+                    psutil.AccessDenied,
+                    psutil.ZombieProcess):
+                continue
         
         processes.sort(key=lambda x:x[1] , reverse= True)
 
@@ -224,8 +225,9 @@ class Brain:
 
                 processes.append((name , memory) )
 
-            except:
-
+            except (psutil.NoSuchProcess,
+                    psutil.AccessDenied,
+                    psutil.ZombieProcess):
                 continue
 
         processes.sort(key=lambda x:x[1] , reverse=True)
@@ -275,7 +277,7 @@ class Brain:
    
                 }
 
-        except:
+        except subprocess.SubprocessError:
 
             service_status = "unknown"
             
@@ -334,7 +336,9 @@ class Brain:
                         "uptime": uptime
                     }
                  
-            except:
+            except (psutil.NoSuchProcess,
+                    psutil.AccessDenied,
+                    psutil.ZombieProcess):
                 continue
 
         return{
@@ -402,8 +406,9 @@ class Brain:
                         "service" : service_name,
                         "status" : "TERMINATED"
                     }
-            except:
-
+            except (psutil.NoSuchProcess,
+                    psutil.AccessDenied,
+                    psutil.ZombieProcess):
                 continue
 
         log("Processes not found: " + service_name)
@@ -1009,11 +1014,15 @@ class Brain:
     
     def load_alerts(self):
 
-        with open("alerts.json", "r") as file:
+        try:
 
-            alerts = json.load(file)
+            with open(self.alert_file, "r") as file:
 
-        return alerts
+                return json.load(file)
+
+        except (FileNotFoundError, json.JSONDecodeError):
+
+            return []
 
 
     def get_incident_stats(self):
@@ -1541,9 +1550,11 @@ class Brain:
 
                 self.audit_trail = json.load(file)
 
-        except:
+        except (FileNotFoundError, json.JSONDecodeError):
 
             self.audit_trail = []
+
+        return self.audit_trail
 
 
     def service_reliability_report(self):
@@ -1646,8 +1657,7 @@ class Brain:
 
                 self.notifications = json.load(file)
 
-        except:
-
+        except (FileNotFoundError, json.JSONDecodeError):
             self.notifications = []
 
         return self.notifications
