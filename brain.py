@@ -1284,9 +1284,11 @@ class Brain:
 
             services.append({
 
-                "name" : service ,
+                "service": result["service"],
 
-                "status" : result["status"]
+                "status": result["status"],
+
+                "health": result["health"]
             })
 
         health_score = self.calculate_health_score()
@@ -1498,7 +1500,7 @@ class Brain:
         report = self.generate_report()
 
         filename = datetime.now().strftime(
-            
+
             "system_report_%Y%m%d_%H%M%S.txt"
         )
 
