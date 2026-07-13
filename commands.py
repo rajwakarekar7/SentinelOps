@@ -16,6 +16,7 @@ def help_command(parts, brain):
     print("\nSYSTEM MONITORING")
     print(section)
     print("/dashboard         View system dashboard")
+    print("/system            View system resource information")
     print("/live              Start live monitoring")
     print("/telemetry         View telemetry history")
 
@@ -23,8 +24,8 @@ def help_command(parts, brain):
     print(section)
     print("/services          List monitored services")
     print("/service <name>    View service status")
-    print("/monitor           Start background monitoring")
-    print("/recover <name>    Recover a service")
+    print("/monitor           Start background monitoring engine")
+    print("/recover <name>    Restart a monitored service")
     print("/kill <process>    Safely terminate a process")
 
     print("\nRESOURCE ANALYTICS")
@@ -48,8 +49,8 @@ def help_command(parts, brain):
 
     print("\nRELIABILITY")
     print(section)
-    print("/reliability       Service reliability analytics")
-    print("/recoveryrate      Recovery success statistics")
+    print("/reliability       View service reliability report")
+    print("/recoveryrate      View recovery success rate")
     print("/clear-audit       Clear audit history")
 
     print("\nSYSTEM")
@@ -62,219 +63,163 @@ def help_command(parts, brain):
 
 #SYSTEM_RESOURCE_USAGE
 
-def system_command(parts , brain):
-    
+def system_command(parts, brain):
+
     system_info = brain.get_system_info()
 
     top_cpu = brain.get_top_cpu_processes()
 
     top_memory = brain.get_top_memory_processes()
 
-    print("\n[SYSTEM INFO]")
+    line = "=" * 50
+    section = "-" * 50
 
-    print()
+    print("\n" + line)
+    print("              SYSTEM INFORMATION")
+    print(line)
 
-    print("CPU USAGE:" , system_info["cpu"] , "%")
-    print("CPU CORES:" , system_info["cpu_cores"] )
-    print("RUNNING PROCESSES:" , system_info["process_count"])
+    print("\nSYSTEM OVERVIEW")
+    print(section)
+
+    print(f"CPU Usage           : {system_info['cpu']}%")
+    print(f"CPU Cores           : {system_info['cpu_cores']}")
+    print(f"Running Processes   : {system_info['process_count']}")
+    print(f"Memory Usage        : {system_info['memory_percent']}%")
+    print(f"Total RAM           : {system_info['total_ram']} GB")
+    print(f"Available RAM       : {system_info['available_ram']} GB")
+    print(f"Disk Usage          : {system_info['disk_percent']}%")
+    print(f"System Uptime       : {system_info['uptime']}")
 
     if top_cpu["warning"]:
 
-        print("\n[WARNING]")
-
+        print("\nCPU WARNING")
+        print(section)
         print(top_cpu["warning"])
 
-    print("\nTOP CPU PROCESSES:\n")
+    print("\nTOP CPU PROCESSES")
+    print(section)
+    print(f"{'Process':<30}{'CPU %':>8}")
+    print(section)
 
     for process in top_cpu["processes"]:
 
-        print(
-
-            f"{process[0]:30} {process[1]} %" 
- 
-        )
-
-    print()
-
-    print("MEMORY USAGE:" , system_info["memory_percent"] , "%")
-    print("TOTAL_RAM:" , system_info["total_ram"] , "GB")
-    print("AVAILABLE_RAM:" , system_info["available_ram"] , "GB")
+        print(f"{process[0]:<30}{process[1]:>8}%")
 
     if top_memory["warning"]:
 
-        print("\n[WARNING]")
-
+        print("\nMEMORY WARNING")
+        print(section)
         print(top_memory["warning"])
 
-    print("\nTOP MEMORY PROCESSES:\n")
+    print("\nTOP MEMORY PROCESSES")
+    print(section)
+    print(f"{'Process':<30}{'Memory %':>10}")
+    print(section)
 
     for process in top_memory["processes"]:
 
-        print(
+        print(f"{process[0]:<30}{process[1]:>10}%")
 
-            f"{process[0]:30} {process[1]}%"
-        )
-
-
-    print()
-
-    print("DISK USAGE:" ,  system_info["disk_percent"] , "%")
-
-    print()
-
-    print("UPTIME: " , system_info["uptime"])
-    
+    print("\n" + line)
 
 #LIVE MONITORING TOOL
 
-def live_monitor( parts , brain):
+def live_monitor(parts, brain):
 
-    while True:
+    line = "=" * 60
+    section = "-" * 60
 
-        os.system("cls" if os.name == "nt" else "clear")
+    try:
 
-        system_info = brain.get_system_info()
+        while True:
 
-        log(
+            os.system("cls" if os.name == "nt" else "clear")
 
-            "CPU: "
-            
-            +str(system_info["cpu"])
+            dashboard = brain.get_dashboard_data()
 
-            + "% |"
+            system_info = brain.get_system_info()
 
-            "RAM: "
+            top_cpu = brain.get_top_cpu_processes()
 
-            +str(system_info["memory_percent"])
+            top_memory = brain.get_top_memory_processes()
 
-            + "% |"
+            print(line)
+            print("                    LIVE MONITOR")
+            print(line)
 
-            "DISK: "
+            print(f"\nLast Updated        : {time.strftime('%Y-%m-%d %H:%M:%S')}")
 
-            +str(system_info["disk_percent"])
+            print("\nSYSTEM HEALTH")
+            print(section)
 
-            +"%"
+            print(f"Health Score        : {dashboard['health_score']}/100 ({dashboard['health']})")
+            print(f"System Health       : {dashboard['health']}")
+            print(f"Health Trend        : {dashboard['trend']}")
+            print(f"Predictive Status   : {dashboard['predictive']}")
+            print(f"Active Alerts       : {dashboard['active_alerts']}")
 
-        )
+            print("\nSYSTEM RESOURCES")
+            print(section)
 
-        top_cpu = brain.get_top_cpu_processes()
+            print(f"CPU Usage           : {system_info['cpu']}%")
+            print(f"Memory Usage        : {system_info['memory_percent']}%")
+            print(f"Disk Usage          : {system_info['disk_percent']}%")
+            print(f"CPU Cores           : {system_info['cpu_cores']}")
+            print(f"Running Processes   : {system_info['process_count']}")
+            print(f"Total RAM           : {system_info['total_ram']} GB")
+            print(f"Available RAM       : {system_info['available_ram']} GB")
+            print(f"System Uptime       : {system_info['uptime']}")
 
-        top_memory = brain.get_top_memory_processes()
+            if top_cpu["warning"]:
 
-        print("==============================")
-        print("     LIVE SYSTEM MONITOR")
-        print("==============================\n")
+                print("\nCPU WARNING")
+                print(section)
+                print(top_cpu["warning"])
 
-        print(
-            "CPU USAGE:",
-            system_info["cpu"],
-            "%"
-        )
+            print("\nTOP CPU PROCESSES")
+            print(section)
+            print(f"{'Process':<35}{'CPU %':>8}")
+            print(section)
 
-        print(
-            "CPU CORES:",
-            system_info["cpu_cores"]
-        )
+            for process in top_cpu["processes"]:
 
-        print(
-            "RUNNING PROCESSES:",
-            system_info["process_count"]
-        )
+                print(f"{process[0]:<35}{process[1]:>8}%")
 
-        # CPU WARNING
+            if top_memory["warning"]:
 
-        if top_cpu["warning"]:
+                print("\nMEMORY WARNING")
+                print(section)
+                print(top_memory["warning"])
 
-            print("\n[WARNING]")
+            print("\nTOP MEMORY PROCESSES")
+            print(section)
+            print(f"{'Process':<35}{'Memory %':>10}")
+            print(section)
 
-            print(
-                top_cpu["warning"]
-            )
+            for process in top_memory["processes"]:
 
-        # CPU LEADERBOARD
+                print(f"{process[0]:<35}{process[1]:>10}%")
 
-        print("\nTOP CPU PROCESSES:\n")
+            print(section)
+            print("Monitoring Active | Refresh Interval: 5 seconds")
+            print("Press Ctrl+C to stop monitoring")
+            print(line)
 
-        for process in top_cpu["processes"]:
+            time.sleep(5)
 
-            print(
+    except KeyboardInterrupt:
 
-                f"{process[0]:30} "
-                f"{process[1]} %"
-
-            )
-
-        # MEMORY
-
-        print("\nMEMORY USAGE:")
-
-        print(
-            system_info["memory_percent"],
-            "%"
-        )
-
-        print(
-            "TOTAL RAM:",
-            system_info["total_ram"],
-            "GB"
-        )
-
-        print(
-            "AVAILABLE RAM:",
-            system_info["available_ram"],
-            "GB"
-        )
-
-        # MEMORY WARNING
-
-        if top_memory["warning"]:
-
-            print("\n[WARNING]")
-
-            print(
-                top_memory["warning"]
-            )
-
-        # MEMORY LEADERBOARD
-
-        print("\nTOP MEMORY PROCESSES:\n")
-
-        for process in top_memory["processes"]:
-
-            print(
-
-                f"{process[0]:30} "
-                f"{process[1]} %"
-
-            )
-
-        # DISK
-
-        print("\nDISK USAGE:")
-
-        print(
-            system_info["disk_percent"],
-            "%"
-        )
-
-        # UPTIME
-
-        print("\nUPTIME:")
-
-        print(
-            system_info["uptime"]
-        )
-
-        time.sleep(10)
+        print("\n")
+        print("Live monitoring stopped.")
 
 
 #PROCESSES MONITORING SYSTEM
 
 def service_command(parts, brain):
 
-    if not has_enough_parts(parts , 2):
+    if not has_enough_parts(parts, 2):
 
-        print("USAGE: /service name")
+        print("Usage: /service <service_name>")
 
         return
 
@@ -282,43 +227,52 @@ def service_command(parts, brain):
 
     result = brain.get_service_status(service_name)
 
-    print("\n[SERVICE STATUS]\n")
-    print("SERVICE:" , result["service"])
-    
-    print("STATUS:" , result["status"])
-
-    if result["status"] == "ACTIVE":
-
-        print("PID:" , result["pid"])
-
-        print("CPU USAGE:", result["cpu"],"%")
-
-        print("MEMORY USAGE:", result["memory"], "%")
-
-        print("UPTIME:" , result["uptime"])
-
-        print("HEALTH:" , result["health"])
-
-    else:
-
-        print("HEALTH:" , result["health"])
-
-
-#SERVICES DASHBOARD
-
-def services_command(parts , brain):
-
-    results = brain.check_critical_services()
-
     line = "=" * 50
     section = "-" * 50
 
     print("\n" + line)
-    print("            MONITORED SERVICES")
+    print("                SERVICE STATUS")
     print(line)
 
-    print(f"{'Service':<18}Status")
+    print(f"\nService            : {result['service']}")
+    print(f"Status             : {result['status']}")
+    print(f"Health             : {result['health']}")
+
+    print("\nPROCESS INFORMATION")
     print(section)
+
+    print(f"PID                : {result['pid']}")
+    print(f"CPU Usage          : {result['cpu']}%")
+    print(f"Memory Usage       : {result['memory']}%")
+    print(f"Uptime             : {result['uptime']}")
+
+    print("\n" + line)
+
+#SERVICES DASHBOARD
+
+def services_command(parts, brain):
+
+    results = brain.check_critical_services()
+
+    line = "=" * 70
+    section = "-" * 70
+
+    print("\n" + line)
+    print("                    MONITORED SERVICES")
+    print(line)
+
+    print(f"{'Service':<15}{'Status':<15}{'Health'}")
+    print(section)
+
+    for service in results:
+
+        print(
+            f"{service['service']:<15}"
+            f"{service['status']:<15}"
+            f"{service['health']}"
+        )
+
+    print("\n" + line)
 
 
 def kill_command(parts , brain):
@@ -360,18 +314,54 @@ def monitor_command(parts ,brain):
     print("\n[BACKGROUND MONITOR STARTED]\n")
 
 
-def telemetry_command(parts , brain):
+def telemetry_command(parts, brain):
 
-    print("\n[TELEMETRY HISTORY]\n")
+    line = "=" * 60
+    section = "-" * 60
 
-    print("CPU HISTORY:")
-    print(brain.cpu_history)
+    print("\n" + line)
+    print("                  TELEMETRY HISTORY")
+    print(line)
 
-    print("MEMORY HISTORY:")
-    print(brain.memory_history)
+    telemetry = [
 
-    print("DISK HISTORY:")
-    print(brain.disk_history)
+        ("CPU", brain.cpu_history),
+
+        ("MEMORY", brain.memory_history),
+
+        ("DISK", brain.disk_history)
+
+    ]
+
+    for name, history in telemetry:
+
+        print(f"\n{name} TELEMETRY")
+        print(section)
+
+        if not history:
+
+            print("No telemetry recorded.")
+            print("Start monitoring using: /monitor")
+            continue
+
+        print(f"Samples Recorded   : {len(history)}")
+        print(f"Latest Reading     : {history[-1]}%")
+        print(f"Highest Reading    : {max(history)}%")
+        print(f"Lowest Reading     : {min(history)}%")
+        print(f"Average Usage      : {round(sum(history)/len(history),2)}%")
+
+        print("\nRecent History")
+        print(section)
+
+        recent_history = history[-20:]
+
+        start_sample = len(history) - len(recent_history) + 1
+
+        for index, value in enumerate(recent_history, start=start_sample):
+
+            print(f"Sample {index:02}          {value}%")
+
+    print("\n" + line)
 
 def average_command(parts ,brain):
 
@@ -531,7 +521,7 @@ def dashboard_command(parts, brain):
     print("\nSYSTEM HEALTH")
     print(section)
 
-    print(f"Health Score        : {data['health_score']}/100")
+    print(f"Health Score        : {data['health_score']}/100 ({data['health']})")
     print(f"System Health       : {data['health']}")
     print(f"Health Trend        : {data['trend']}")
     print(f"Predictive Status   : {data['predictive']}")
@@ -567,17 +557,23 @@ def report_command(parts , brain):
     print(report)
 
 
-def save_report_command(parts ,brain):
+def save_report_command(parts, brain):
 
     filename = brain.save_report()
 
-    print("\n[REPORT EXPORT]\n")
+    line = "=" * 50
 
-    print("REPORT SAVED:", filename)
+    print("\n" + line)
+    print("              REPORT EXPORTED")
+    print(line)
 
-def audit_command(parts ,brain):
+    print("\nOperational report exported successfully.\n")
 
-    print("\n[AUDIT TRAIL]\n")
+    print(f"File Name          : {filename}")
+
+    print("\n" + line)
+
+def audit_command(parts, brain):
 
     print(brain.show_audit_trail())
 
@@ -600,8 +596,6 @@ def clear_audit_command(parts ,brain):
 
 
 def notifications_command(parts ,brain):
-
-    print("\n[NOTIFICATIONS]\n")
 
     print(brain.show_notifications())
 

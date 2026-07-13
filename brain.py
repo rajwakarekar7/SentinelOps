@@ -4,6 +4,7 @@ import time
 import json
 import os
 import subprocess
+from datetime import datetime
 
 class Brain:
 
@@ -277,9 +278,17 @@ class Brain:
    
                 }
 
-        except subprocess.SubprocessError:
+        except (subprocess.SubprocessError, FileNotFoundError):
 
-            service_status = "unknown"
+            return {
+                "service": service_name,
+                "status": "UNSUPPORTED",
+                "pid": "N/A",
+                "cpu": 0,
+                "memory": 0,
+                "health": "SYSTEMCTL NOT AVAILABLE",
+                "uptime": "N/A"
+            }
             
 
         for process in psutil.process_iter():
@@ -341,9 +350,14 @@ class Brain:
                     psutil.ZombieProcess):
                 continue
 
-        return{
-           "service": service_name,
-            "status": service_status.upper()
+        return {
+            "service": service_name,
+            "status": service_status.upper(),
+            "pid": "N/A",
+            "cpu": 0,
+            "memory": 0,
+            "health": "UNKNOWN",
+            "uptime": "N/A"
         }
     
 
@@ -980,34 +994,40 @@ class Brain:
 
     def show_audit_trail(self):
 
-        if len(self.audit_trail) == 0 :
+        if len(self.audit_trail) == 0:
 
-            return "NO AUDIT EVENT RECORDED"
-        
+            return "No audit events recorded."
+
+        line = "=" * 70
+        section = "-" * 70
+
         lines = []
 
+        lines.append(line)
+        lines.append("                         AUDIT TRAIL")
+        lines.append(line)
+        lines.append("")
         lines.append(
-
-            f"{'TIMESTAMP':25}"
-            f"{'EVENT':20}"
-            f"{'TARGET':15}"
-            f"{'STATUS':15}"
+            f"{'Timestamp':<25}"
+            f"{'Event':<20}"
+            f"{'Target':<15}"
+            f"{'Status'}"
         )
-
-        lines.append("-" * 70)
+        lines.append(section)
 
         for event in self.audit_trail:
 
-            line = (
+            lines.append(
 
-                f"{event['timestamp']:25}"
-                f"{event['event']:20}"
-                f"{event['target']:15}"
-                f"{event['status']:15}"
+                f"{event['timestamp']:<25}"
+                f"{event['event']:<20}"
+                f"{event['target']:<15}"
+                f"{event['status']}"
 
             )
 
-            lines.append(line)
+        lines.append("")
+        lines.append(line)
 
         return "\n".join(lines)
 
@@ -1414,103 +1434,61 @@ class Brain:
 
         resolved = self.get_resolved_stats()
 
-        report = "\n[SYSTEM REPORT]\n\n"
+        line = "=" * 60
+        section = "-" * 60
+
+        report = "\n" + line + "\n"
+        report += "                 OPERATIONAL REPORT\n"
+        report += line + "\n"
+
+        report += "\nSYSTEM HEALTH\n"
+        report += section + "\n"
 
         report += (
-
-            "HEALTH SCORE: "
-
-            + str(dashboard["health_score"])
-
-            + "/100\n"
+            f"Health Score        : "
+            f"{dashboard['health_score']}/100 "
+            f"({dashboard['health']})\n"
         )
+        report += f"System Health       : {dashboard['health']}\n"
+        report += f"Health Trend        : {dashboard['trend']}\n"
+        report += f"Predictive Status   : {dashboard['predictive']}\n"
 
-        report += (
+        report += "\nRESOURCE SUMMARY\n"
+        report += section + "\n"
 
-            "HEALTH TREND: "
+        report += f"CPU Usage           : {dashboard['cpu']}%\n"
+        report += f"Memory Usage        : {dashboard['memory']}%\n"
+        report += f"Disk Usage          : {dashboard['disk']}%\n"
 
-            + dashboard["trend"]
+        report += "\nINCIDENT SUMMARY\n"
+        report += section + "\n"
 
-            + "\n"
-        )
+        report += f"Active Alerts       : {dashboard['active_alerts']}\n"
+        report += f"Resolved Incidents  : {dashboard['resolved_alerts']}\n"
 
-        report += (
+        report += "\nRESOLVED INCIDENTS\n"
+        report += section + "\n"
 
-            "PREDICTIVE STATUS: "
+        report += f"CPU Incidents       : {resolved['cpu']}\n"
+        report += f"Memory Incidents    : {resolved['memory']}\n"
+        report += f"Disk Incidents      : {resolved['disk']}\n"
 
-            + dashboard["predictive"]
-
-            + "\n\n"
-            
-        )
-
-        report += (
-
-            "ACTIVE ALERTS: "
-
-            + str(dashboard["active_alerts"])
-
-            + "\n"
-
-        )
-
-        report += (
-
-            "RESOLVED INCIDENTS: "
-
-            + str(dashboard["resolved_alerts"])
-
-            + "\n\n"
-
-        )
-
-        report += (
-
-            "CPU INCIDENTS: "
-
-            + str(resolved["cpu"])
-
-            + "\n"
-
-        )
-
-        report += (
-
-            "MEMORY INCIDENTS: "
-
-            + str(resolved["memory"])
-
-            + "\n"
-
-        )
-
-        report += (
-
-            "DISK INCIDENTS: "
-
-            + str(resolved["disk"])
-
-            + "\n"
-
-        )
-
-        report += "\n"
+        report += "\nSERVICE RELIABILITY\n"
+        report += section + "\n"
 
         report += self.service_reliability_report()
 
-        report += "\n"
-
-        report += "\n[RECENT AUDIT EVENTS]\n\n"
+        report += "\n\nRECENT AUDIT EVENTS\n"
+        report += section + "\n"
 
         report += self.get_recent_audit_events()
 
-        report += "\n\n"
-
-        report += "[RECENT NOTIFICATIONS]\n\n"
+        report += "\n\nRECENT NOTIFICATIONS\n"
+        report += section + "\n"
 
         report += self.get_recent_notifications()
 
-        report += "\n"
+        report += "\n\n" + line
 
         return report
     
@@ -1519,7 +1497,10 @@ class Brain:
 
         report = self.generate_report()
 
-        filename = "system_report.txt"
+        filename = datetime.now().strftime(
+            
+            "system_report_%Y%m%d_%H%M%S.txt"
+        )
 
         with open(filename, "w") as file:
 
@@ -1719,39 +1700,48 @@ class Brain:
 
         if len(self.notifications) == 0:
 
-            return "NO NOTIFICATIONS RECORDED"
-        
+            return "No notifications recorded."
+
+        line = "=" * 110
+        section = "-" * 110
+
         lines = []
+
+        lines.append(line)
+        lines.append("                                  NOTIFICATIONS")
+        lines.append(line)
+        lines.append("")
 
         lines.append(
 
-            f"{'TIMESTAMP':25}"
-            f"{'SEVERITY':12}"
-            f"{'SERVICE':15}"
-            f"{'RECOVERY':15}"
-            f"{'MESSAGE'}"
+            f"{'Timestamp':<25}"
+            f"{'Severity':<12}"
+            f"{'Service':<15}"
+            f"{'Recovery':<15}"
+            f"{'Message'}"
+
         )
 
-        lines.append("-" * 100)
+        lines.append(section)
 
         recent_notifications = self.notifications[-20:]
 
-
         for notification in recent_notifications:
 
-            line =(
+            lines.append(
 
-                f"{notification['timestamp']:25}"
-                f"{notification['severity']:12}"
-                f"{notification['service']:15}"
-                f"{notification['recovery_status']:15}"
+                f"{notification['timestamp']:<25}"
+                f"{notification['severity']:<12}"
+                f"{notification['service']:<15}"
+                f"{notification['recovery_status']:<15}"
                 f"{notification['message']}"
+
             )
 
-            lines.append(line)
+        lines.append("")
+        lines.append(line)
 
         return "\n".join(lines)
-    
 
     def get_recent_audit_events(self):
 
