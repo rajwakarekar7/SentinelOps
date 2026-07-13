@@ -15,48 +15,48 @@ def help_command(parts, brain):
 
     print("\nSYSTEM MONITORING")
     print(section)
-    print("/dashboard         View system dashboard")
-    print("/system            View system resource information")
-    print("/live              Start live monitoring")
-    print("/telemetry         View telemetry history")
+    print(f"{'/dashboard':<22}View system dashboard")
+    print(f"{'/system':<22}View system resource information")
+    print(f"{'/live':<22}Start live monitoring")
+    print(f"{'/telemetry':<22}View telemetry history")
 
     print("\nSERVICE MANAGEMENT")
     print(section)
-    print("/services          List monitored services")
-    print("/service <name>    View service status")
-    print("/monitor           Start background monitoring engine")
-    print("/recover <name>    Restart a monitored service")
-    print("/kill <process>    Safely terminate a process")
+    print(f"{'/services':<22}List monitored services")
+    print(f"{'/service <name>':<22}View service status")
+    print(f"{'/monitor':<22}Start background monitoring engine")
+    print(f"{'/recover <name>':<22}Restart a monitored service")
+    print(f"{'/kill <process>':<22}Safely terminate a process")
 
-    print("\nRESOURCE ANALYTICS")
+    print("\nRESOURCE ANALYSIS")
     print(section)
-    print("/average <metric>  Average resource usage")
-    print("/peak <metric>     Peak resource usage")
-    print("/stability <metric> Resource stability analysis")
+    print(f"{'/average <metric>':<22}Average resource usage")
+    print(F"{'/peak <metric>':<22}Peak resource usage")
+    print(f"{'/stability <metric>':<22}Resource stability analysis")
 
     print("\nINCIDENT MANAGEMENT")
     print(section)
-    print("/alerts            View active alerts")
-    print("/incidentstats     View incident statistics")
-    print("/resolvedstats     View resolved incidents")
-    print("/audit             View audit trail")
-    print("/notifications     View notification history")
+    print(f"{'/alerts':<22}View active alerts")
+    print(f"{'/incidentstats':<22}View incident statistics")
+    print(f"{'/resolvedstats':<22}View resolved incidents")
+    print(f"{'/audit':<22}View audit trail")
+    print(f"{'/notifications':<22}View notification history")
 
     print("\nREPORTING")
     print(section)
-    print("/report            Generate operational report")
-    print("/savereport        Export report")
+    print(f"{'/report':<22}Generate operational report")
+    print(f"{'/savereport':<22}Export report")
 
     print("\nRELIABILITY")
     print(section)
-    print("/reliability       View service reliability report")
-    print("/recoveryrate      View recovery success rate")
-    print("/clear-audit       Clear audit history")
+    print(f"{'/reliability':<22}View service reliability report")
+    print(f"{'/recoveryrate':<22}View recovery success rate")
+    print(f"{'/clear-audit':<22}Clear audit history")
 
     print("\nSYSTEM")
     print(section)
-    print("/help              Show help")
-    print("/exit              Exit SentinelOps")
+    print(f"{'/help':<22}Show help")
+    print(f"{'/exit':<22}Shut down SentinelOps")
 
     print("\n" + line)
 
@@ -98,12 +98,12 @@ def system_command(parts, brain):
 
     print("\nTOP CPU PROCESSES")
     print(section)
-    print(f"{'Process':<30}{'CPU %':>8}")
+    print(f"{'Process':<35}{'CPU %':>8}")
     print(section)
 
     for process in top_cpu["processes"]:
 
-        print(f"{process[0]:<30}{process[1]:>8}%")
+        print(f"{process[0]:<35}{process[1]:>8}%")
 
     if top_memory["warning"]:
 
@@ -113,12 +113,12 @@ def system_command(parts, brain):
 
     print("\nTOP MEMORY PROCESSES")
     print(section)
-    print(f"{'Process':<30}{'Memory %':>10}")
+    print(f"{'Process':<35}{'Memory %':>10}")
     print(section)
 
     for process in top_memory["processes"]:
 
-        print(f"{process[0]:<30}{process[1]:>10}%")
+        print(f"{process[0]:<35}{process[1]:>10}%")
 
     print("\n" + line)
 
@@ -521,7 +521,7 @@ def dashboard_command(parts, brain):
     print("\nSYSTEM HEALTH")
     print(section)
 
-    print(f"Health Score        : {data['health_score']}/100 ({data['health']})")
+    print(f"Health Score        : {data['health_score']}/100")
     print(f"System Health       : {data['health']}")
     print(f"Health Trend        : {data['trend']}")
     print(f"Predictive Status   : {data['predictive']}")
@@ -541,11 +541,16 @@ def dashboard_command(parts, brain):
 
     print("\nMONITORED SERVICES")
     print(section)
-    print(f"{'Service':<18} Status")
+    print(f"{'Service':<15}{'Status':<15}Health")
     print(section)
 
     for service in data["services"]:
-        print(f"{service['name']:<18} {service['status']}")
+
+        print(
+            f"{service['service']:<15}"
+            f"{service['status']:<15}"
+            f"{service['health']}"
+        )
 
     print("\n" + line)
 
