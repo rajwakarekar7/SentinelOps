@@ -71,6 +71,8 @@ class Brain:
 
         self.failed_services = set()
 
+        self.monitor_thread = None
+
        
 
     
@@ -807,7 +809,7 @@ class Brain:
             self.monitor_services()
 
 
-            time.sleep(30)
+            time.sleep(self.config["monitor_interval"])
 
     
     def stop_monitor(self):
@@ -910,7 +912,7 @@ class Brain:
 
                 return(
 
-                    "Monitor RAM usage "
+                    "monitor RAM usage "
                     "and avoid opening heavy programs"
                 )
             
@@ -998,36 +1000,38 @@ class Brain:
 
             return "No audit events recorded."
 
-        line = "=" * 70
-        section = "-" * 70
+        border = "=" * 75
+        section = "-" * 75
 
         lines = []
 
-        lines.append(line)
+        lines.append(border)
         lines.append("                         AUDIT TRAIL")
-        lines.append(line)
+        lines.append(border)
         lines.append("")
         lines.append(
-            f"{'Timestamp':<25}"
-            f"{'Event':<20}"
-            f"{'Target':<15}"
-            f"{'Status'}"
+
+            f"{'TIMESTAMP':22}"
+            f"{'EVENT':18}"
+            f"{'TARGET':25}"
+            f"{'STATUS':12}"
         )
         lines.append(section)
 
         for event in self.audit_trail:
 
-            lines.append(
+            line = (
 
-                f"{event['timestamp']:<25}"
-                f"{event['event']:<20}"
-                f"{event['target']:<15}"
-                f"{event['status']}"
-
+                f"{event['timestamp']:22}"
+                f"{event['event']:18}"
+                f"{event['target']:25}"
+                f"{event['status']:12}"
             )
+            
+            lines.append("")
+            lines.append(line)
 
-        lines.append("")
-        lines.append(line)
+        lines.append(border)
 
         return "\n".join(lines)
 

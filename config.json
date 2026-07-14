@@ -9,5 +9,7 @@
     "disk_warning": 80,
     "disk_critical": 95,
 
-    "cooldown": 300
+    "cooldown": 300,
+
+    "monitor_interval": 30
 }

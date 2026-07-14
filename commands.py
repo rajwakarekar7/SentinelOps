@@ -152,7 +152,7 @@ def live_monitor(parts, brain):
             print("\nSYSTEM HEALTH")
             print(section)
 
-            print(f"Health Score        : {dashboard['health_score']}/100 ({dashboard['health']})")
+            print(f"Health Score        : {dashboard['health_score']}/100")
             print(f"System Health       : {dashboard['health']}")
             print(f"Health Trend        : {dashboard['trend']}")
             print(f"Predictive Status   : {dashboard['predictive']}")
@@ -220,7 +220,6 @@ def service_command(parts, brain):
     if not has_enough_parts(parts, 2):
 
         print("Usage: /service <service_name>")
-
         return
 
     service_name = get_word(parts)
@@ -241,13 +240,18 @@ def service_command(parts, brain):
     print("\nPROCESS INFORMATION")
     print(section)
 
-    print(f"PID                : {result['pid']}")
-    print(f"CPU Usage          : {result['cpu']}%")
-    print(f"Memory Usage       : {result['memory']}%")
-    print(f"Uptime             : {result['uptime']}")
+    if result["status"] == "ACTIVE":
+
+        print(f"PID                : {result['pid']}")
+        print(f"CPU Usage          : {result['cpu']}%")
+        print(f"Memory Usage       : {result['memory']}%")
+        print(f"Uptime             : {result['uptime']}")
+
+    else:
+
+        print("No running process found.")
 
     print("\n" + line)
-
 #SERVICES DASHBOARD
 
 def services_command(parts, brain):
@@ -301,17 +305,34 @@ def monitor_command(parts ,brain):
 
         return
 
-    monitor_thread = threading.Thread(
-            
-        target= brain.start_background_monitor,
-
-        daemon = True
-            
+    brain.monitor_thread = threading.Thread(
+        target=brain.start_background_monitor,
+        daemon=True
     )
 
-    monitor_thread.start()
+    brain.monitor_thread.start()
 
-    print("\n[BACKGROUND MONITOR STARTED]\n")
+    brain.log_audit_event(
+        "MONITOR",
+        "BACKGROUND ENGINE",
+        "STARTED"
+    )
+
+    log("Background monitoring engine started.")
+
+    line = "=" * 50
+
+    print("\n" + line)
+    print("      BACKGROUND MONITOR STARTED")
+    print(line)
+
+    print("\nTelemetry collection enabled.")
+    print("Alert engine activated.")
+    print("Service monitoring activated.")
+
+    print("\nMonitoring Interval : 30 seconds")
+
+    print("\n" + line)
 
 
 def telemetry_command(parts, brain):
