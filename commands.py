@@ -178,12 +178,12 @@ def live_monitor(parts, brain):
 
             print("\nTOP CPU PROCESSES")
             print(section)
-            print(f"{'Process':<35}{'CPU %':>8}")
+            print(f"{'Process':<40}{'CPU %':>8}")
             print(section)
 
             for process in top_cpu["processes"]:
 
-                print(f"{process[0]:<35}{process[1]:>8}%")
+                print(f"{process[0]:<40}{process[1]:>8}%")
 
             if top_memory["warning"]:
 
@@ -193,12 +193,12 @@ def live_monitor(parts, brain):
 
             print("\nTOP MEMORY PROCESSES")
             print(section)
-            print(f"{'Process':<35}{'Memory %':>10}")
+            print(f"{'Process':<40}{'Memory %':>10}")
             print(section)
 
             for process in top_memory["processes"]:
 
-                print(f"{process[0]:<35}{process[1]:>10}%")
+                print(f"{process[0]:<40}{process[1]:>10}%")
 
             print(section)
             print("Monitoring Active | Refresh Interval: 5 seconds")
@@ -279,22 +279,38 @@ def services_command(parts, brain):
     print("\n" + line)
 
 
-def kill_command(parts , brain):
+def kill_command(parts, brain):
 
     if not has_enough_parts(parts, 2):
 
-        print("USAGE: /kill service_name")
-
+        print("Usage: /kill <process_name>")
         return
-    
-    service_name = get_word(parts)
 
-    results = brain.kill_service(service_name)
+    process = get_word(parts)
 
-    print("\n[KILL SERVICE]\n")
+    result = brain.kill_service(process)
 
-    print("SERVICE:" , results["service"])
-    print("STATUS:" , results["status"] )
+    line = "=" * 60
+    section = "-" * 60
+
+    print("\n" + line)
+    print("               PROCESS TERMINATION")
+    print(line)
+
+    print(f"\nProcess            : {result['service']}")
+    print(f"PID                : {result['pid']}")
+
+    print("\nTERMINATION RESULT")
+    print(section)
+
+    print(f"Result             : {result['result']}")
+    print(f"Reason             : {result['reason']}")
+
+    audit = "Recorded" if result["audit"] else "Not Recorded"
+
+    print(f"\nAudit Event        : {audit}")
+
+    print("\n" + line)
 
 
 def monitor_command(parts ,brain):
@@ -344,6 +360,16 @@ def telemetry_command(parts, brain):
     print("                  TELEMETRY HISTORY")
     print(line)
 
+    if brain.monitoring:
+
+        print("\nTelemetry Status    : ACTIVE")
+
+    else:
+
+        print("\nTelemetry Status    : STOPPED")
+
+    print(f"Collection Interval : {brain.config['monitor_interval']} seconds")
+
     telemetry = [
 
         ("CPU", brain.cpu_history),
@@ -356,7 +382,7 @@ def telemetry_command(parts, brain):
 
     for name, history in telemetry:
 
-        print(f"\n{name} TELEMETRY")
+        print(f"\n{name} RESOURCE HISTORY")
         print(section)
 
         if not history:
@@ -365,13 +391,13 @@ def telemetry_command(parts, brain):
             print("Start monitoring using: /monitor")
             continue
 
-        print(f"Samples Recorded   : {len(history)}")
-        print(f"Latest Reading     : {history[-1]}%")
-        print(f"Highest Reading    : {max(history)}%")
-        print(f"Lowest Reading     : {min(history)}%")
-        print(f"Average Usage      : {round(sum(history)/len(history),2)}%")
+        print(f"Latest Reading      : {round(history[-1], 2)}%")
+        print(f"Average Usage       : {round(sum(history) / len(history), 2)}%")
+        print(f"Peak Usage          : {round(max(history), 2)}%")
+        print(f"Minimum Usage       : {round(min(history), 2)}%")
+        print(f"Samples Recorded    : {len(history)}")
 
-        print("\nRecent History")
+        print("\nRecent Samples")
         print(section)
 
         recent_history = history[-20:]
@@ -380,152 +406,260 @@ def telemetry_command(parts, brain):
 
         for index, value in enumerate(recent_history, start=start_sample):
 
-            print(f"Sample {index:02}          {value}%")
+            print(
+
+                f"Sample {index:<3}"
+                f"{round(value,2):>10}%"
+
+            )
+
+    print(section)
+
+    if brain.monitoring:
+
+        print("Monitoring engine is currently collecting telemetry.")
+
+    else:
+
+        print("Monitoring engine is stopped.")
 
     print("\n" + line)
 
-def average_command(parts ,brain):
+def average_command(parts, brain):
 
-    if not has_enough_parts(parts , 2):
+    if not has_enough_parts(parts, 2):
 
-        print("USAGE: /average cpu")
-
+        print("Usage: /average <cpu|memory|disk>")
         return
-    
+
     metric = parts[1].lower()
 
-    if metric == "cpu":
+    average = brain.get_average_usage(metric)
 
-        average = brain.get_average_cpu()
+    if average is None:
 
-        print("\n[CPU ANALYTICS]\n")
-
-        print("AVERAGE CPU :" ,average , "%")
-
-    else:
-
-        print("Unknown metric")
-    
-
-def peak_command(parts ,brain):
-
-    if not has_enough_parts(parts ,2):
-
+        print("Unknown metric.")
+        print("Available metrics: cpu, memory, disk")
         return
+
+    line = "=" * 50
+
+    print("\n" + line)
+    print(f"          {metric.upper()} AVERAGE ANALYTICS")
+    print(line)
+
+    print(f"\nAverage {metric.upper()} Usage : {average}%")
+
+    print("\n" + line)
     
+
+def peak_command(parts, brain):
+
+    if not has_enough_parts(parts, 2):
+
+        print("Usage: /peak <cpu|memory|disk>")
+        return
+
     metric = parts[1].lower()
 
-    if metric == "cpu":
+    peak = brain.get_peak_usage(metric)
 
-        peak = brain.get_peak_cpu()
+    if peak is None:
 
-        print("\n[CPU PEAK ANALYTICS]\n")
-
-        print("CPU PEAK: " , peak , "%")
-    
-    else:
-
-        print("Unknown metric")
-
-
-def stability_command(parts ,brain):
-
-    if not has_enough_parts(parts , 2):
-
-        print("USAGE: /stability cpu")
-
+        print("Unknown metric.")
+        print("Available metrics: cpu, memory, disk")
         return
-      
+
+    line = "=" * 50
+
+    print("\n" + line)
+    print(f"            {metric.upper()} PEAK ANALYTICS")
+    print(line)
+
+    print(f"\nPeak {metric.upper()} Usage : {peak}%")
+
+    print("\n" + line)
+
+def stability_command(parts, brain):
+
+    if not has_enough_parts(parts, 2):
+
+        print("Usage: /stability <cpu|memory|disk>")
+        return
+
     metric = parts[1].lower()
 
-    if metric == "cpu":
+    result = brain.get_stability(metric)
 
-        stability = brain.get_cpu_stability()
+    if result is None:
 
-        print("\n[CPU STABILITY ANALYTICS]\n")
+        print("Unknown metric.")
+        print("Available metrics: cpu, memory, disk")
+        return
 
-        print("CPU STABILITY:" , stability)
+    line = "=" * 50
 
-    else:
+    print("\n" + line)
+    print(f"         {metric.upper()} STABILITY ANALYSIS")
+    print(line)
 
-        print("Unknown metric")
+    print(f"\nStability Status : {result['status']}")
+    print(f"Average Variation: {result['variation']}%")
+    print(f"Samples Recorded : {result['samples']}")
+
+    print("\n" + line)
 
 
-def alerts_command(parts , brain):
+def alerts_command(parts, brain):
 
-    print("\n[ACTIVE ALERTS]\n")
+    line = "=" * 75
+    section = "-" * 75
+
+    print("\n" + line)
+    print("                         ACTIVE ALERTS")
+    print(line)
 
     if len(brain.active_alerts) == 0:
 
-        print("No active alerts")
-
+        print("\nNo active alerts.")
+        print("\n" + line)
         return
-    
+
+    print(
+        f"{'Resource':<12}"
+        f"{'Severity':<12}"
+        f"{'Value':<10}"
+        f"{'Since':<22}"
+    )
+
+    print(section)
+
     for alert in brain.active_alerts:
 
         print(
 
-            alert["start_time"],
+            f"{alert['resource'].upper():<12}"
+            f"{alert['severity'].upper():<12}"
+            f"{str(alert['value']) + '%':<10}"
+            f"{alert['start_time']:<22}"
 
-            "|",
+        )
 
-            alert["message"])
+    print("\nRecommendations")
+    print(section)
+
+    for alert in brain.active_alerts:
+
+        print(
+
+            f"{alert['resource'].upper():<10}"
+            f"{alert.get('recommendation', 'No recommendation available')}"
+
+        )
+
+    print("\n" + line)
 
 
-def incident_stats_command(parts , brain):
+def incident_stats_command(parts, brain):
 
     stats = brain.get_incident_stats()
 
-    print("\n[INCIDENT ANALYTICS]\n")
+    line = "=" * 60
+    section = "-" * 60
 
-    print("CPU INCIDENT: " , stats["cpu"])
-    print("MEMORY INCIDENT: " , stats["memory"])
-    print("DISK INCIDENT: " , stats["disk"])
+    print("\n" + line)
+    print("                 INCIDENT STATISTICS")
+    print(line)
 
-    print()
+    print("\nINCIDENT SUMMARY")
+    print(section)
 
-    print("CRITICAL INCIDENT: " , stats["critical"])
-    print("WARNING INCIDENT: ", stats["warning"])
+    print(f"Total Incidents      : {stats['total']}")
+    print(f"Active Incidents     : {stats['active']}")
+
+    print("\nRESOURCE BREAKDOWN")
+    print(section)
+
+    print(f"CPU Incidents        : {stats['cpu']}")
+    print(f"Memory Incidents     : {stats['memory']}")
+    print(f"Disk Incidents       : {stats['disk']}")
+
+    print("\nSEVERITY BREAKDOWN")
+    print(section)
+
+    print(f"Critical Incidents   : {stats['critical']}")
+    print(f"Warning Incidents    : {stats['warning']}")
+
+    print("\n" + line)
 
 
-def resolved_stats_command(parts , brain):
+def resolved_stats_command(parts, brain):
 
     stats = brain.get_resolved_stats()
 
-    print("\n[RESOLVED INCIDENT ANALYTICS]\n")
+    line = "=" * 60
+    section = "-" * 60
 
-    print("TOTAL INCIDENTS:", stats["total"])
+    print("\n" + line)
+    print("                 RESOLVED INCIDENTS")
+    print(line)
 
-    print()
+    print("\nRESOLUTION SUMMARY")
+    print(section)
 
-    print("CPU INCIDENTS:", stats["cpu"])
+    print(f"Resolved Incidents  : {stats['resolved']}")
 
-    print("MEMORY INCIDENTS:", stats["memory"])
+    print("\nRESOURCE BREAKDOWN")
+    print(section)
 
-    print("DISK INCIDENTS:", stats["disk"])
+    print(f"CPU Incidents       : {stats['cpu']}")
+    print(f"Memory Incidents    : {stats['memory']}")
+    print(f"Disk Incidents      : {stats['disk']}")
 
-    print()
+    print("\nSEVERITY BREAKDOWN")
+    print(section)
 
-    print("CRITICAL INCIDENTS:", stats["critical"])
+    print(f"Critical Incidents  : {stats['critical']}")
+    print(f"Warning Incidents   : {stats['warning']}")
 
-    print("WARNING INCIDENTS:", stats["warning"])
+    print("\n" + line)
 
+def recover_command(parts, brain):
 
-def recover_command(parts , brain):
+    if not has_enough_parts(parts, 2):
 
-    if not has_enough_parts(parts ,2):
-
-        print("USAGE /recover service")
-
+        print("Usage: /recover <service_name>")
         return
-    
+
     service = parts[1].lower()
 
     result = brain.restart_service(service)
 
-    print("\n[SERVICE RECOVERY]\n")
+    line = "=" * 60
+    section = "-" * 60
 
-    print(result)
+    print("\n" + line)
+    print("                  SERVICE RECOVERY")
+    print(line)
+
+    print(f"\nService            : {result['service']}")
+    print(f"Previous Status    : {result['previous_status']}")
+    print(f"Current Status     : {result['current_status']}")
+
+    print("\nRECOVERY RESULT")
+    print(section)
+
+    print(f"Result             : {result['result']}")
+    print(f"Reason             : {result['reason']}")
+
+    audit_status = "Recorded" if result["audit"] else "Not Recorded"
+
+    notification_status = "Sent" if result["notification"] else "Not Sent"
+
+    print(f"\nAudit Event        : {audit_status}")
+    print(f"Notification       : {notification_status}")
+
+    print("\n" + line)
 
 
 def dashboard_command(parts, brain):
@@ -604,25 +738,78 @@ def audit_command(parts, brain):
     print(brain.show_audit_trail())
 
 
-def reliability_command(parts , brain):
+def reliability_command(parts, brain):
 
-    print(brain.service_reliability_report())
+    report = brain.service_reliability_report()
+
+    line = "=" * 60
+
+    print("\n" + line)
+    print("               SERVICE RELIABILITY")
+    print(line)
+
+    print(report)
+
+    print(line)
 
 
 def recoveryrate_command(parts, brain):
 
-    print(brain.recovery_success_rate())
+    stats = brain.recovery_success_rate()
+
+    line = "=" * 60
+    section = "-" * 60
+
+    print("\n" + line)
+    print("              RECOVERY SUCCESS RATE")
+    print(line)
+
+    if stats["total"] == 0:
+
+        print("\nNo recovery data available.")
+
+        print("\n" + line)
+
+        return
+
+    print("\nRECOVERY SUMMARY")
+    print(section)
+
+    print(f"Total Recoveries      : {stats['total']}")
+    print(f"Successful Recoveries : {stats['success']}")
+    print(f"Failed Recoveries     : {stats['failed']}")
+
+    print("\nPERFORMANCE")
+    print(section)
+
+    print(f"Recovery Success Rate : {stats['rate']}%")
+    print(f"Recovery Engine       : {stats['health']}")
+
+    print("\n" + line)
 
 
-def clear_audit_command(parts ,brain):
+def clear_audit_command(parts, brain):
 
     result = brain.clear_audit_trail()
 
-    print(result)
+    line = "=" * 60
+
+    print("\n" + line)
+    print("                AUDIT MAINTENANCE")
+    print(line)
+
+    print("\nAction            : Clear Audit Trail")
+    print(f"Result            : {result['result']}")
+    print(f"Message           : {result['message']}")
+
+    print("\nSystem Status     : Ready")
+
+    print("\n" + line)
 
 
-def notifications_command(parts ,brain):
+def notifications_command(parts, brain):
 
+    print()
     print(brain.show_notifications())
 
 

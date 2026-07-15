@@ -73,6 +73,18 @@ class Brain:
 
         self.monitor_thread = None
 
+        self.protected_processes = {
+
+            "system",
+            "systemd",
+            "init",
+            "explorer",
+            "wininit",
+            "csrss",
+            "python"
+
+        }
+
        
 
     
@@ -376,22 +388,9 @@ class Brain:
         return results
 
          
-    def kill_service(self , service_name):
+    def kill_service(self, service_name):
 
         service_name = service_name.lower()
-
-        protected =[
-
-            "system",
-
-            "explorer" ,
-
-            "wininit" ,
-
-            "csrss",
-
-            "python"
-        ]
 
         for process in psutil.process_iter():
 
@@ -401,40 +400,68 @@ class Brain:
 
                 if service_name in name:
 
-                    for item in protected:
+                    for protected in self.protected_processes:
 
-                        if item in name:
+                        if protected in name:
 
                             log("Blocked protected process: " + name)
 
-                            return{
+                            self.log_audit_event(
+                                "PROCESS_TERMINATION",
+                                name,
+                                "BLOCKED"
+                            )
 
-                                "service": service_name,
-                                "status": "PROTECTED PROCESS"
+                            return {
+
+                                "service": name,
+                                "pid": process.pid,
+                                "result": "BLOCKED",
+                                "reason": "PROTECTED SYSTEM PROCESS",
+                                "audit": True
+
                             }
-                             
+
+                    pid = process.pid
+
                     process.kill()
 
                     log("Killed process: " + name)
 
-                    return{
+                    self.log_audit_event(
+                        "PROCESS_TERMINATION",
+                        name,
+                        "SUCCESS"
+                    )
 
-                        "service" : service_name,
-                        "status" : "TERMINATED"
+                    return {
+
+                        "service": name,
+                        "pid": pid,
+                        "result": "SUCCESS",
+                        "reason": "PROCESS TERMINATED",
+                        "audit": True
+
                     }
-            except (psutil.NoSuchProcess,
-                    psutil.AccessDenied,
-                    psutil.ZombieProcess):
+
+            except (
+                psutil.NoSuchProcess,
+                psutil.AccessDenied,
+                psutil.ZombieProcess
+            ):
                 continue
 
-        log("Processes not found: " + service_name)
+        log("Process not found: " + service_name)
 
-        return{
+        return {
 
-            "service" : service_name,
-            "status" : "NOT FOUND"
+            "service": service_name,
+            "pid": "N/A",
+            "result": "FAILED",
+            "reason": "PROCESS NOT FOUND",
+            "audit": False
+
         }
-    
     
     def start_background_monitor(self):
 
@@ -505,6 +532,8 @@ class Brain:
 
                          "start_time":time.strftime("%Y-%m-%d %H:%M:%S"),
 
+                         "recommendation": recommendation,
+
                          "message": (
 
                             "[CRITICAL] CPU USAGE: "
@@ -559,6 +588,8 @@ class Brain:
                          "value": cpu,
 
                          "start_time":time.strftime("%Y-%m-%d %H:%M:%S"),
+
+                         "recommendation": recommendation,
 
                          "message": (
 
@@ -615,6 +646,8 @@ class Brain:
 
                          "start_time":time.strftime("%Y-%m-%d %H:%M:%S"),
 
+                         "recommendation": recommendation,
+
                          "message": (
 
                             "[CRITICAL] MEMORY USAGE: "
@@ -667,6 +700,8 @@ class Brain:
                          "value": memory,
 
                          "start_time":time.strftime("%Y-%m-%d %H:%M:%S"),
+
+                         "recommendation": recommendation,
 
                          "message": (
 
@@ -723,6 +758,8 @@ class Brain:
 
                         "start_time":time.strftime("%Y-%m-%d %H:%M:%S"),
 
+                        "recommendation": recommendation,
+
                         "message": (
 
                             "[CRITICAL] DISK USAGE: "
@@ -775,6 +812,8 @@ class Brain:
 
                         "start_time":time.strftime("%Y-%m-%d %H:%M:%S"),
 
+                        "recommendation": recommendation,
+
                         "message": (
 
                             "[WARNING] DISK USAGE: "
@@ -819,63 +858,107 @@ class Brain:
         log("Background monitor stopped")
 
 
-    def get_average_cpu(self):
+    def get_average_usage(self, metric):
 
-        if len(self.cpu_history) == 0:
+        metric = metric.lower()
+
+        history = {
+
+            "cpu": self.cpu_history,
+            "memory": self.memory_history,
+            "disk": self.disk_history
+
+        }.get(metric)
+
+        if history is None:
+
+            return None
+
+        if len(history) == 0:
 
             return 0
-        
-        total = sum(self.cpu_history)
 
-        average = total / len(self.cpu_history)
-
-        average = round(average, 2)
-
-        return average
+        return round(sum(history) / len(history), 2)
     
     
-    def get_peak_cpu(self):
+    def get_peak_usage(self, metric):
 
-        if len(self.cpu_history) == 0:
+        metric = metric.lower()
+
+        history = {
+
+            "cpu": self.cpu_history,
+            "memory": self.memory_history,
+            "disk": self.disk_history
+
+        }.get(metric)
+
+        if history is None:
+
+            return None
+
+        if len(history) == 0:
 
             return 0
-        
-        peak = max(self.cpu_history)
 
-        peak = round(peak, 2 )
-
-        return peak
+        return round(max(history), 2)
     
     
-    def get_cpu_stability(self):
+    def get_stability(self, metric):
 
-        if len(self.cpu_history) == 0:
+        metric = metric.lower()
 
-            return "NO DATA"
-        
-        average = self.get_average_cpu()
+        history = {
 
-        diffrences = []
+            "cpu": self.cpu_history,
+            "memory": self.memory_history,
+            "disk": self.disk_history
 
-        for value in self.cpu_history:
+        }.get(metric)
 
-            diffrence = abs(value - average)
+        if history is None:
 
-            diffrences.append(diffrence)
+            return None
 
-        instability = sum(diffrences) / len(diffrences)
+        if len(history) == 0:
 
-        if instability < 10:
+            return {
 
-            return "STABLE"
-        
-        elif instability < 30:
+                "status": "NO DATA",
+                "variation": 0,
+                "samples": 0
 
-            return "MODERATE"
-        
+            }
+
+        average = sum(history) / len(history)
+
+        differences = []
+
+        for value in history:
+
+            differences.append(abs(value - average))
+
+        variation = round(sum(differences) / len(differences), 2)
+
+        if variation < 10:
+
+            status = "STABLE"
+
+        elif variation < 30:
+
+            status = "MODERATE"
+
         else:
 
-            return "UNSTABLE"
+            status = "UNSTABLE"
+
+        return {
+
+            "status": status,
+            "variation": variation,
+            "samples": len(history)
+
+        }
         
 
     def get_recommendation(self , resource , severity):
@@ -951,7 +1034,7 @@ class Brain:
 
                 alert["end_time"] = end_time
 
-                alert["duration"] = "resolved"
+                alert["status"] = "RESOLVED"
 
                 self.resolved_alerts.append(alert)
 
@@ -1052,48 +1135,51 @@ class Brain:
     def get_incident_stats(self):
 
         cpu_count = 0
-
         memory_count = 0
-
         disk_count = 0
 
         critical_count = 0
+        warning_count = 0
 
-        warning_count =  0
+        for alert in self.active_alerts:
 
-        for alerts in self.active_alerts:
-
-            if alerts["resource"] == "cpu":
+            if alert["resource"] == "cpu":
 
                 cpu_count += 1
 
-            elif alerts["resource"] == "memory":
+            elif alert["resource"] == "memory":
 
                 memory_count += 1
 
-            elif alerts["resource"] == "disk":
+            elif alert["resource"] == "disk":
 
                 disk_count += 1
 
-            elif alerts["severity"] == "critical":
+            # Separate IF statements
+            if alert["severity"] == "critical":
 
                 critical_count += 1
 
-            elif alerts["severity"] == "warning":
+            elif alert["severity"] == "warning":
 
                 warning_count += 1
 
         return {
 
-            "cpu" : cpu_count,
+            "cpu": cpu_count,
 
-            "memory" : memory_count,
+            "memory": memory_count,
 
-            "disk" : disk_count,
+            "disk": disk_count,
 
-            "critical" : critical_count ,
+            "critical": critical_count,
 
-            "warning" : warning_count
+            "warning": warning_count,
+
+            "active": len(self.active_alerts),
+
+            "total": len(self.active_alerts)
+
         }
     
 
@@ -1133,7 +1219,7 @@ class Brain:
 
         return {
 
-            "total": len(self.resolved_alerts),
+            "resolved": len(self.resolved_alerts),
 
             "cpu": cpu_count,
 
@@ -1148,23 +1234,35 @@ class Brain:
         }
     
 
-    def restart_service(self , service_name):
+    def restart_service(self, service_name):
 
         if service_name not in self.recoverable_services:
 
-            return "SERVICE NOT APPROVED FOR AUTO-RECOVERY"
-        
+            return {
+
+                "service": service_name,
+                "previous_status": "UNKNOWN",
+                "current_status": "NOT RECOVERABLE",
+                "result": "FAILED",
+                "reason": "SERVICE NOT APPROVED FOR AUTO-RECOVERY",
+
+                "audit": False,
+                "notification": False
+
+            }
+
+        previous = self.get_service_status(service_name)["status"]
+
         subprocess.run(
 
-            ["sudo" ,"systemctl" ,"restart" , service_name],
+            ["sudo", "systemctl", "restart", service_name],
 
             capture_output=True,
-
             text=True
+
         )
 
-        result =self.get_service_status(service_name)
-        
+        result = self.get_service_status(service_name)
 
         if result["status"] == "ACTIVE":
 
@@ -1172,49 +1270,63 @@ class Brain:
 
             self.log_audit_event(
 
-                "AUTO_RECOVERY" ,
-
-                service_name ,
-
+                "AUTO_RECOVERY",
+                service_name,
                 "SUCCESS"
+
             )
 
             self.send_notification(
 
-                "INFO" ,
-
-                service_name ,
-
-                service_name + " recovered successfully" ,
-
+                "INFO",
+                service_name,
+                service_name + " recovered successfully",
                 "SUCCESS"
+
             )
 
-            return "SERVICE RECOVERED SUCCESSFULLY"
-        
+            return {
+
+                "service": service_name,
+                "previous_status": previous,
+                "current_status": result["status"],
+                "result": "SUCCESS",
+                "reason": "SERVICE RESTARTED SUCCESSFULLY",
+
+                "audit": True,
+                "notification": True
+
+            }
 
         self.log_audit_event(
 
-            "AUTO_RECOVERY" ,
-
-            service_name ,
-
+            "AUTO_RECOVERY",
+            service_name,
             "FAILED"
+
         )
 
         self.send_notification(
 
-            "CRITICAL" ,
-
-            service_name ,
-
-            service_name + " recovery failed" ,
-
+            "CRITICAL",
+            service_name,
+            service_name + " recovery failed",
             "FAILED"
+
         )
-        
-        
-        return "SERVICE RECOVERY FAILED"
+
+        return {
+
+            "service": service_name,
+            "previous_status": previous,
+            "current_status": result["status"],
+            "result": "FAILED",
+            "reason": "SERVICE COULD NOT BE RESTARTED",
+
+            "audit": True,
+            "notification": True
+
+        }
     
     
     def monitor_services(self):
@@ -1554,46 +1666,58 @@ class Brain:
 
                 service = event["target"]
 
-                if service not in failure_counts:
-
-                    failure_counts[service] = 0
-
-                failure_counts[service] +=1
-
+                failure_counts[service] = failure_counts.get(service, 0) + 1
 
         if len(failure_counts) == 0:
 
-            return "NO SERVICE FAILURE RECORDED"
-        
-        report = "\n[SERVICE RELIABILITY ANALYTICS]\n\n"
+            return "\nNo service failures recorded.\n"
 
-        for service ,count in failure_counts.items():
+        report = ""
 
-            report += f"{service:15} : {count} failures\n"
+        report += "\nSERVICE FAILURE SUMMARY\n"
+        report += "-" * 60 + "\n"
 
+        report += f"{'Service':<20}{'Failures':<15}{'Health'}\n"
+
+        report += "-" * 60 + "\n"
+
+        for service, count in failure_counts.items():
+
+            if count <= 2:
+
+                health = "GOOD"
+
+            elif count <= 5:
+
+                health = "FAIR"
+
+            else:
+
+                health = "POOR"
+
+            report += f"{service:<20}{count:<15}{health}\n"
 
         most_unstable = max(
-
             failure_counts,
-
             key=failure_counts.get
         )
 
-        report += "\nMOST UNSTABLE SERVICE\n"
+        report += "\n"
 
-        report += most_unstable
+        report += f"Most Unstable Service : {most_unstable}\n"
 
-        report += "\n\n"
+        report += "\n"
 
         report += self.recovery_success_rate()
 
-        return report
+        report += "\n"
 
+        return report
+    
 
     def recovery_success_rate(self):
 
         total_recoveries = 0
-
         successful_recoveries = 0
 
         for event in self.audit_trail:
@@ -1608,32 +1732,73 @@ class Brain:
 
         if total_recoveries == 0:
 
-            return "NO RECOVERY DATA AVAILABLE"
-        
+            return {
+
+                "total": 0,
+                "success": 0,
+                "failed": 0,
+                "rate": 0,
+                "health": "NO DATA"
+
+            }
+
+        failed = total_recoveries - successful_recoveries
+
         success_rate = round(
 
             (successful_recoveries / total_recoveries) * 100,
 
             2
+
         )
 
-        return (
+        if success_rate >= 90:
 
-            f"Recovery Success Rate: "
+            health = "EXCELLENT"
 
-            f"{success_rate}% "
+        elif success_rate >= 75:
 
-            f"({successful_recoveries}/{total_recoveries})"
-        )
+            health = "GOOD"
 
+        elif success_rate >= 50:
+
+            health = "FAIR"
+
+        else:
+
+            health = "POOR"
+
+        return {
+
+            "total": total_recoveries,
+            "success": successful_recoveries,
+            "failed": failed,
+            "rate": success_rate,
+            "health": health
+
+        }
 
     def clear_audit_trail(self):
+
+        if len(self.audit_trail) == 0:
+
+            return {
+
+                "result": "NO ACTION",
+                "message": "AUDIT TRAIL IS ALREADY EMPTY"
+
+            }
 
         self.audit_trail = []
 
         self.save_audit_trail()
 
-        return "AUDIT TRAIL CLEARED SUCCESSFULLY"
+        return {
+
+            "result": "SUCCESS",
+            "message": "AUDIT TRAIL CLEARED SUCCESSFULLY"
+
+        }
     
 
     def load_notification(self):
@@ -1714,7 +1879,7 @@ class Brain:
         lines = []
 
         lines.append(line)
-        lines.append("                                  NOTIFICATIONS")
+        lines.append("NOTIFICATIONS".center(110))
         lines.append(line)
         lines.append("")
 
@@ -1732,7 +1897,7 @@ class Brain:
 
         recent_notifications = self.notifications[-20:]
 
-        for notification in recent_notifications:
+        for notification in reversed(recent_notifications):
 
             lines.append(
 
