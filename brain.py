@@ -1376,13 +1376,13 @@ class Brain:
 
                     log(
 
-                        "[AUTO RECOVERY]"
+                        "[AUTO RECOVERY] "
 
                         + service
 
-                        + "->"
+                        + " -> "
 
-                        + recovery_result
+                        + recovery_result["status"]
                     )
 
 
