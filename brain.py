@@ -64,7 +64,9 @@ class Brain:
 
             "chronyd",
 
-            "crond"
+            "crond",
+
+            "cups"
         ]
 
         self.health_history = []
