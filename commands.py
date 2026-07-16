@@ -144,12 +144,10 @@ def live_monitor(parts, brain):
             top_memory = brain.get_top_memory_processes()
 
             print(line)
-            print("                    LIVE MONITOR")
+            print(f"LIVE MONITOR{'':>20}Updated: {time.strftime('%H:%M:%S')}")
             print(line)
 
-            print(f"\nLast Updated        : {time.strftime('%Y-%m-%d %H:%M:%S')}")
-
-            print("\nSYSTEM HEALTH")
+            print("\nHEALTH")
             print(section)
 
             print(f"Health Score        : {dashboard['health_score']}/100")
@@ -158,18 +156,13 @@ def live_monitor(parts, brain):
             print(f"Predictive Status   : {dashboard['predictive']}")
             print(f"Active Alerts       : {dashboard['active_alerts']}")
 
-            print("\nSYSTEM RESOURCES")
+            print("\nRESOURCES")
             print(section)
 
             print(f"CPU Usage           : {system_info['cpu']}%")
             print(f"Memory Usage        : {system_info['memory_percent']}%")
             print(f"Disk Usage          : {system_info['disk_percent']}%")
-            print(f"CPU Cores           : {system_info['cpu_cores']}")
-            print(f"Running Processes   : {system_info['process_count']}")
-            print(f"Total RAM           : {system_info['total_ram']} GB")
-            print(f"Available RAM       : {system_info['available_ram']} GB")
-            print(f"System Uptime       : {system_info['uptime']}")
-
+            
             if top_cpu["warning"]:
 
                 print("\nCPU WARNING")
@@ -201,8 +194,7 @@ def live_monitor(parts, brain):
                 print(f"{process[0]:<40}{process[1]:>10}%")
 
             print(section)
-            print("Monitoring Active | Refresh Interval: 5 seconds")
-            print("Press Ctrl+C to stop monitoring")
+            print("Monitoring | Refresh: 5s | Ctrl+C to Stop")
             print(line)
 
             time.sleep(5)
