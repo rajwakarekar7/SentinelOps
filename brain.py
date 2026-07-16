@@ -1382,7 +1382,11 @@ class Brain:
 
                         + " -> "
 
-                        + recovery_result["status"]
+                        + recovery_result["result"]
+
+                        + " | "
+
+                        + recovery_result["reason"]
                     )
 
 
