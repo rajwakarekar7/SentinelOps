@@ -56,15 +56,15 @@ class Brain:
 
         self.monitored_services =[
 
-            "nginx" ,
+            "sshd",
 
-            "mysql" ,
+            "firewalld",
 
-            "httpd" ,
+            "NetworkManager",
 
-            "sshd" ,
-
-            "docker"
+            "chronyd",
+            
+            "crond"
         ]
 
         self.health_history = []
