@@ -60,10 +60,10 @@ class Brain:
 
             "firewalld",
 
-            "NetworkManager",
+            "rsyslog",
 
             "chronyd",
-            
+
             "crond"
         ]
 
