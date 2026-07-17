@@ -1743,7 +1743,15 @@ class Brain:
 
         report += "\n"
 
-        report += self.recovery_success_rate()
+        recovery = self.recovery_success_rate()
+
+        report += "\nRECOVERY ANALYTICS\n\n"
+
+        report += f"Total Recoveries : {recovery['total']}\n"
+        report += f"Successful       : {recovery['success']}\n"
+        report += f"Failed           : {recovery['failed']}\n"
+        report += f"Success Rate     : {recovery['rate']}%\n"
+        report += f"Recovery Health  : {recovery['health']}\n"
 
         report += "\n"
 
