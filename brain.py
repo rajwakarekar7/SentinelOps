@@ -51,7 +51,7 @@ class Brain:
             "rsyslog",
 
             "chronyd",
-            
+
             "crond"
 
         }
@@ -1378,6 +1378,28 @@ class Brain:
 
                         "PENDING"
                     )
+
+                    if service not in self.recoverable_services:
+
+                        self.log_audit_event(
+
+                            "RECOVERY_SKIPPED",
+
+                            service,
+
+                            "NOT APPROVED"
+                        )
+
+                        log(
+
+                            "[RECOVERY SKIPPED] "
+
+                            + service
+
+                            + " is not approved for auto recovery"
+                        )
+
+                        continue
 
                     recovery_result = self.restart_service(service)
 
