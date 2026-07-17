@@ -1599,8 +1599,7 @@ class Brain:
 
         report += (
             f"Health Score        : "
-            f"{dashboard['health_score']}/100 "
-            f"({dashboard['health']})\n"
+            f"{dashboard['health_score']}/100\n"
         )
         report += f"System Health       : {dashboard['health']}\n"
         report += f"Health Trend        : {dashboard['trend']}\n"
