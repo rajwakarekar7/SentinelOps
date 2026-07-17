@@ -855,9 +855,14 @@ class Brain:
     
     def stop_monitor(self):
 
+        if not self.monitoring:
+            return False
+
         self.monitoring = False
 
         log("Background monitor stopped")
+
+        return True
 
 
     def get_average_usage(self, metric):
@@ -1345,11 +1350,11 @@ class Brain:
 
                     log(
 
-                        "SERVICE FAILURE"
+                        "SERVICE FAILURE: "
 
                         + service
 
-                        + "is not running"
+                        + " is not running"
                     )
 
                     self.log_audit_event(
@@ -1367,7 +1372,7 @@ class Brain:
 
                         service ,
 
-                        service + " service failed",
+                        service + " service failure detected",
 
                         "PENDING"
                     )

@@ -72,9 +72,11 @@ while True:
     
     if sentence == "/exit":
 
-        brain.stop_monitor()
+        stopped = brain.stop_monitor()
 
-        print("\nStopping monitoring engine...")
+        if stopped:
+            print("\nStopping monitoring engine...")
+
         print("SentinelOps shutdown complete.")
 
         break
