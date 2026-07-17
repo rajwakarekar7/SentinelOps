@@ -1712,7 +1712,7 @@ class Brain:
         report += "\nSERVICE FAILURE SUMMARY\n"
         report += "-" * 60 + "\n"
 
-        report += f"{'Service':<20}{'Failures':<15}{'Health'}\n"
+        report += f"{'Service':<20}{'Failures':<15}{'Reliability'}\n"
 
         report += "-" * 60 + "\n"
 
@@ -1730,7 +1730,7 @@ class Brain:
 
                 health = "POOR"
 
-            report += f"{'Service':<20}{'Failures':<15}{'Reliability'}\n"
+            report += f"{service:<20}{count:<15}{health}\n"
 
         most_unstable = max(
             failure_counts,
@@ -1754,7 +1754,7 @@ class Brain:
             f"{recovery['rate']}% "
             f"({recovery['success']}/{recovery['total']})\n"
         )
-        report += f"Recovery Health       : {recovery['health']}\n"
+        report += f"Recovery Health       : {recovery['health']}"
 
         return report
     
