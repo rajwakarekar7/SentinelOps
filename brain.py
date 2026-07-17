@@ -44,13 +44,15 @@ class Brain:
 
         self.recoverable_services ={
 
-            "nginx" ,
+            "sshd",
 
-            "httpd" ,
+            "firewalld",
 
-            "mysql" ,
+            "rsyslog",
 
-            "sshd"
+            "chronyd",
+            
+            "crond"
 
         }
 
