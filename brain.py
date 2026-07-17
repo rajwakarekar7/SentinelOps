@@ -1730,30 +1730,31 @@ class Brain:
 
                 health = "POOR"
 
-            report += f"{service:<20}{count:<15}{health}\n"
+            report += f"{'Service':<20}{'Failures':<15}{'Reliability'}\n"
 
         most_unstable = max(
             failure_counts,
             key=failure_counts.get
         )
 
-        report += "\n"
-
-        report += f"Most Unstable Service : {most_unstable}\n"
-
-        report += "\n"
+        report += f"\nMost Unstable Service : {most_unstable} ({failure_counts[most_unstable]} failures)\n"
 
         recovery = self.recovery_success_rate()
 
-        report += "\nRECOVERY ANALYTICS\n\n"
-
-        report += f"Total Recoveries : {recovery['total']}\n"
-        report += f"Successful       : {recovery['success']}\n"
-        report += f"Failed           : {recovery['failed']}\n"
-        report += f"Success Rate     : {recovery['rate']}%\n"
-        report += f"Recovery Health  : {recovery['health']}\n"
-
         report += "\n"
+        report += "-" * 60
+        report += "\nRECOVERY ANALYTICS\n"
+        report += "-" * 60 + "\n"
+
+        report += f"Total Recoveries      : {recovery['total']}\n"
+        report += f"Successful Recoveries : {recovery['success']}\n"
+        report += f"Failed Recoveries     : {recovery['failed']}\n"
+        report += (
+            f"Success Rate          : "
+            f"{recovery['rate']}% "
+            f"({recovery['success']}/{recovery['total']})\n"
+        )
+        report += f"Recovery Health       : {recovery['health']}\n"
 
         return report
     
